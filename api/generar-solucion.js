@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const respuesta = await fetch("https://api.gemini.com/v1/...", {
+    const respuesta = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,5 +35,6 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Error llamando a Gemini" });
   }
 }
+
 
 
