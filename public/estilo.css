@@ -813,7 +813,7 @@
                 width: 100%;
         }
     }
-        @media (max-width:200px){
+        @media (max-width:100px){
             #contacto{
                 display: flex;
                 justify-content: center;
