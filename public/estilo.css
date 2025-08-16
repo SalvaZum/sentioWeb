@@ -708,9 +708,12 @@
         .secondary{
             max-width: 50%;
         }
-         #contacto{
+        #contacto {
             width: 100%;
+            min-height: 100vh; /* Se expande al alto completo de la ventana */
             background: linear-gradient(45deg, var(--blue-dark) 50%, grey 50%);
+            background-size: cover; /* Se ajusta con el tamaño del contenedor */
+            background-repeat: no-repeat;
         }
         .contacto{
             color: white;
@@ -738,8 +741,8 @@
         input::placeholder{
             color: rgba(255, 255, 255, 0.521);
         }
-        textarea::placeholder{
-            color:grey;
+        textarea::placeholder {
+            color: #333333; /* Gris oscuro */
         }
         .msj{
             width: 100%;
