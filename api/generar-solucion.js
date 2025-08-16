@@ -10,8 +10,9 @@ export default async function handler(req, res) {
   if (!pregunta) {
     return res.status(400).json({ error: 'Falta la pregunta' });
   }
-
+  console.log("Pregunta recibida:", pregunta);
   try {
+    
     const respuesta = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', {
       method: 'POST',
       headers: {
@@ -27,7 +28,6 @@ export default async function handler(req, res) {
     });
 
     const data = await respuesta.json();
-
     console.log('Respuesta de Gemini:', data);
 
     const receta = data.choices?.[0]?.message?.content || 'Sin respuesta';
@@ -38,3 +38,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Error llamando a Gemini' });
   }
 }
+
