@@ -786,14 +786,21 @@
             width: 100%;
             padding: 20px;
         }   
+        .secondary{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
         .new{
             flex-direction: column;
         }
         input, .msj, textarea {
             font-size: 14px;
             padding: 12px;
+            background-color: rgba(188, 192, 255, 0.137);
         }
-
         .submit-button {
             font-size: 1rem;
             padding: 1rem;
@@ -828,6 +835,7 @@
             input, .msj, textarea {
                 font-size: 13px;
                 padding: 10px;
+                background-color: rgba(188, 192, 255, 0.137);
             }
 
             .submit-button {
