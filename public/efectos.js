@@ -251,7 +251,6 @@
         });
 
 //Api GEMINI
-
 generarBtn.addEventListener("click", async () => {
   const prompt = mensaje.value; // tomamos el texto del usuario
 
@@ -266,7 +265,7 @@ generarBtn.addEventListener("click", async () => {
     const data = await res.json();
     respuestaDiv.textContent = data.receta || "Error al obtener respuesta";
   } catch (error) {
-    respuestaDiv.textContent = "Error al conectarse con la IA";
+    respuestaDiv.textContent = "Seguimos pensando...";
     console.error(error);
   }
 });
