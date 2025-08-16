@@ -779,6 +779,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
         .contact-form {
             margin: 10px;
@@ -801,14 +802,18 @@
 
         @media (max-width: 480px) {
             #contacto{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
             .contact-form {
                 width: 100%;
                 padding: 15px;
                 margin: 10px;
+            }
+            .secondary{
+                width: 100%;
             }
             .new{
                 flex-direction: column;
@@ -821,6 +826,9 @@
             .submit-button {
                 font-size: 0.95rem;
                 padding: 0.8rem;
+            }
+            .secondary{
+                width: 100%;
             }
         }
         label{
