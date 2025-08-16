@@ -115,30 +115,34 @@ min-height: 100px; }
 
     <script>
     const generarBtn = document.getElementById('generarBtn');
-    const mensaje = document.getElementById('msj');
-    const respuestaDiv = document.getElementById('respuesta');
+const mensaje = document.getElementById('msj');
+const respuestaDiv = document.getElementById('respuesta');
 
-    generarBtn.addEventListener('click', async () => {
-    if (!mensaje.value) {
-        alert('Por favor, escribe tu pregunta.');
-        return;
-    }
-    generarBtn.disabled = true;
-    respuestaDiv.textContent = 'Pensando... ‍ ';
-    try {
-        const response = await fetch('/generar-solucion', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pregunta: mensaje.value })
-});
+generarBtn.addEventListener('click', async () => {
+  if (!mensaje.value) {
+    alert('Por favor, escribe tu pregunta.');
+    return;
+  }
+
+  generarBtn.disabled = true;
+  respuestaDiv.textContent = 'Pensando...‍';
+
+  try {
+    const response = await fetch('/api/generar-solucion', { // aquí cambié la ruta
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pregunta: mensaje.value }) // coincide con serverless
+    });
+
     const data = await response.json();
     respuestaDiv.textContent = data.receta;
-    } catch (error) {
-        respuestaDiv.textContent = 'Hubo un error. Intenta de nuevo.';
-    } finally {
-        generarBtn.disabled = false;
-    }
-    });
+  } catch (error) {
+    respuestaDiv.textContent = 'Hubo un error. Intenta de nuevo.';
+    console.error(error);
+  } finally {
+    generarBtn.disabled = false;
+  }
+});
     </script>
     </div>
     </section>
