@@ -249,3 +249,27 @@
             const app = new SentioApp();
             app.init();
         });
+
+//Api GEMINI
+const generarBtn = document.getElementById('generarBtn');
+const mensaje = document.getElementById('msj');
+const respuestaDiv = document.getElementById('respuesta');
+
+generarBtn.addEventListener("click", async () => {
+  const prompt = mensaje.value; // tomamos el texto del usuario
+
+  // Fetch hacia la función serverless
+  try {
+    const res = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+    respuestaDiv.textContent = data.receta || "Error al obtener respuesta";
+  } catch (error) {
+    respuestaDiv.textContent = "Error al conectarse con la IA";
+    console.error(error);
+  }
+});
