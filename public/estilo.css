@@ -813,7 +813,51 @@
                 width: 100%;
         }
     }
+        @media (max-width:200px){
+            #contacto{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            .contact-form {
+                width: 100%;
+                padding: 15px;
+                padding-right: 80px;
+                margin: 10px;
+            }
+            .secondary{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            .new{
+                width: 100%;
+                flex-direction: column;
+            }
+            input, .msj, textarea {
+                font-size: 13px;
+                padding: 10px;
+                background-color: rgba(188, 192, 255, 0.137);
+            }
 
+            .submit-button {
+                font-size: 0.95rem;
+                padding: 0.8rem;
+            }
+            .secondary{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            .footer{
+                width: 100%;
+            }
+        }
         @media (max-width: 480px) {
             #contacto{
                 display: flex;
