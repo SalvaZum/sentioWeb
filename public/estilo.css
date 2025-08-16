@@ -709,11 +709,10 @@
             max-width: 50%;
         }
         #contacto {
-          
-            min-width: 100vh; /* Se expande al alto completo de la ventana */
+            width: 100%;
             background: linear-gradient(45deg, var(--blue-dark) 50%, grey 50%);
-            background-size: cover; /* Se ajusta con el tamaño del contenedor */
-            background-repeat: no-repeat;
+            background-size: 100% 100%; /* Se ajusta con el tamaño del contenedor */
+            background-repeat: repeat;
         }
         .contacto{
             color: white;
