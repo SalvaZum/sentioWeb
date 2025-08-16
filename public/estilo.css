@@ -769,6 +769,39 @@
             display: flex;
             flex-direction: column;
         }
+    @media (max-width: 768px) {
+        .contact-form {
+            width: 90%;
+            padding: 20px;
+        }   
+
+        input, .msj, textarea {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .submit-button {
+            font-size: 1rem;
+            padding: 1rem;
+        }
+    }
+
+        @media (max-width: 480px) {
+            .contact-form {
+                width: 95%;
+                padding: 15px;
+            }
+
+            input, .msj, textarea {
+                font-size: 13px;
+                padding: 10px;
+            }
+
+            .submit-button {
+                font-size: 0.95rem;
+                padding: 0.8rem;
+            }
+        }
         label{
             font-weight: 800;
         }
