@@ -798,6 +798,9 @@
             font-size: 1rem;
             padding: 1rem;
         }
+        .footer{
+                width: 100%;
+        }
     }
 
         @media (max-width: 480px) {
@@ -814,6 +817,10 @@
             }
             .secondary{
                 width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
             }
             .new{
                 flex-direction: column;
@@ -828,6 +835,13 @@
                 padding: 0.8rem;
             }
             .secondary{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            .footer{
                 width: 100%;
             }
         }
