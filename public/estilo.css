@@ -775,8 +775,14 @@
             color: white;
         }
     @media (max-width: 768px) {
+        #contacto{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         .contact-form {
-            width: 90%;
+            margin: 10px;
+            width: 100%;
             padding: 20px;
         }   
         .new{
@@ -794,9 +800,15 @@
     }
 
         @media (max-width: 480px) {
+            #contacto{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
             .contact-form {
-                width: 95%;
+                width: 100%;
                 padding: 15px;
+                margin: 10px;
             }
             .new{
                 flex-direction: column;
