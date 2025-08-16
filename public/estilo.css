@@ -787,6 +787,7 @@
             margin: 10px;
             width: 100%;
             padding: 20px;
+            padding-left: 80px;
             padding-right: 80px;
         }   
         .secondary{
@@ -812,8 +813,12 @@
         .footer{
                 width: 100%;
         }
+        .footer-content{
+                display: flex;
+                flex-direction: row;
+        }
     }
-        @media (max-width:100px){
+        @media (max-width:300px){
             #contacto{
                 display: flex;
                 justify-content: center;
@@ -823,6 +828,7 @@
             .contact-form {
                 width: 100%;
                 padding: 15px;
+                padding-left: 80px;
                 padding-right: 80px;
                 margin: 10px;
             }
@@ -856,6 +862,10 @@
             }
             .footer{
                 width: 100%;
+            }
+            .footer-content{
+                display: flex;
+                flex-direction: row;
             }
         }
         @media (max-width: 480px) {
@@ -901,6 +911,10 @@
             }
             .footer{
                 width: 100%;
+            }
+            .footer-content{
+                display: flex;
+                flex-direction: row;
             }
         }
         label{
