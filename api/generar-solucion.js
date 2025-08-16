@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-
+console.log("Ingreso a js correcto")
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
@@ -38,4 +38,5 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Error llamando a Gemini' });
   }
 }
+
 
