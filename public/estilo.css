@@ -708,6 +708,11 @@
         .secondary{
             max-width: 50%;
         }
+         @media (max-width: 768px){
+            .secondary{
+                max-width: 100%;
+            }
+         }
         #contacto {
             width: 100%;
             background: linear-gradient(45deg, var(--blue-dark) 50%, grey 50%);
@@ -818,7 +823,7 @@
                 flex-direction: row;
         }
     }
-        @media (max-width:300px){
+        @media (max-width:100px){
             #contacto{
                 display: flex;
                 justify-content: center;
@@ -976,12 +981,24 @@
         /* TEAM */
         .integrantes{
             display: flex;
-            flex-flow: wrap;
+            flex-direction: column;
+        }
+        .subIntegrantes{
+            display: flex;
+            flex-direction: row;
+            margin: 20px;
             justify-content: space-around;
         }
-        .integrantes div{
-            margin: 20px;
-        }
+         @media (max-width: 768px){
+            .subIntegrantes{
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .subIntegrantes div{
+                margin: 5px;
+            }
+         }
 
         /* Footer mejorado */
         .footer {
