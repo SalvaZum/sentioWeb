@@ -22,6 +22,207 @@ min-height: 100px; }
     </style>
 </head>
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+class Icon3D {
+  constructor(canvasId, type) {
+    this.canvas = document.getElementById(canvasId);
+    this.type = type;
+    this.init();
+  }
+
+  init() {
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(70, 1, 0.1, 1000);
+    this.camera.position.z = 3;
+
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+    this.renderer.setClearColor(0x000000, 0);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    this.scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    directionalLight.position.set(5, 5, 5);
+    this.scene.add(directionalLight);
+
+    this.createModel();
+    this.animate();
+  }
+
+  createModel() {
+    switch (this.type) {
+      case "tablet": this.createTablet(); break;
+      case "heart": this.createHeart(); break;
+      case "web": this.createWebGlobe(); break;
+    }
+  }
+
+createTablet() {
+  this.group = new THREE.Group();
+
+  // 📱 Cuerpo de la tablet (marco)
+  const bodyGeometry = new THREE.BoxGeometry(2, 1.2, 0.1);
+  const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x0B1D51, shininess: 80 });
+  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  this.group.add(body);
+
+  // 🔵 Pantalla
+  const screenGeometry = new THREE.BoxGeometry(1.8, 1.0, 0.02);
+  const screenMaterial = new THREE.MeshPhongMaterial({ 
+    color: 0x0072CE,
+    emissive: 0x001a33,
+    shininess: 120
+  });
+  const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+  screen.position.z = 0.06;
+  this.group.add(screen);
+
+  // ⚪ Botón "home"
+  const buttonGeometry = new THREE.CircleGeometry(0.08, 32);
+  const buttonMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 200 });
+  const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
+  button.rotation.x = -Math.PI / 2; // para que mire hacia arriba
+  button.position.set(0, -0.55, 0.06);
+  this.group.add(button);
+
+  // 📊 Líneas en la pantalla (apps o texto)
+  for (let i = 0; i < 3; i++) {
+    const lineGeometry = new THREE.BoxGeometry(1.0, 0.05, 0.01);
+    const lineMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, opacity: 0.8, transparent: true });
+    const line = new THREE.Mesh(lineGeometry, lineMaterial);
+    line.position.set(0, 0.3 - i * 0.3, 0.07);
+    this.group.add(line);
+  }
+
+  // Escala final
+  this.group.scale.set(1, 1, 1);
+  this.scene.add(this.group);
+}
+
+createHeart() {
+  this.group = new THREE.Group();
+
+  const shape = new THREE.Shape();
+  shape.moveTo(0, 0.25);
+  shape.bezierCurveTo(0, 0, -0.5, 0, -0.5, 0.25);
+  shape.bezierCurveTo(-0.5, 0.55, 0, 0.8, 0, 1);
+  shape.bezierCurveTo(0, 0.8, 0.5, 0.55, 0.5, 0.25);
+  shape.bezierCurveTo(0.5, 0, 0, 0, 0, 0.25);
+
+  const heartGeometry = new THREE.ExtrudeGeometry(shape, { 
+    depth: 0.2, 
+    bevelEnabled: false 
+  });
+  
+  const heartMaterial = new THREE.MeshPhongMaterial({ 
+    color: 0xff4d6d, 
+    shininess: 100 
+  });
+  
+  const heartMesh = new THREE.Mesh(heartGeometry, heartMaterial);
+  
+  // Centrar el corazón - Ajustes importantes:
+  heartMesh.rotation.x = Math.PI; // Rotación para orientarlo correctamente
+  heartMesh.position.y = 0.4; // Ajuste vertical para centrarlo
+  heartMesh.position.z = 0.1; // Pequeño ajuste en profundidad
+  
+  this.group.add(heartMesh);
+  this.group.scale.set(1.8, 1.8, 1.8); // Escala ligeramente reducida
+  
+  // Centrar el grupo completo
+  this.group.position.y = 0.1;
+  
+  this.scene.add(this.group);
+}
+
+  createWebGlobe() {
+  this.group = new THREE.Group();
+
+  // 🌎 Esfera principal (estructura de líneas) - MÁS GRANDE
+  const sphereGeometry = new THREE.SphereGeometry(1.5, 10, 10); // Radio aumentado, menos segmentos
+  const edges = new THREE.EdgesGeometry(sphereGeometry);
+  const lineMaterial = new THREE.LineBasicMaterial({ 
+    color: 0x54b2ff, 
+    linewidth: 3 // Líneas más gruesas
+  });
+  const wireframe = new THREE.LineSegments(edges, lineMaterial);
+  this.group.add(wireframe);
+
+  // 📍 Meridianos (líneas verticales) - MENOS LÍNEAS, MÁS ESPACIADO
+  for (let i = 0; i < 8; i++) { // Reducido de 12 a 8 líneas
+    const lineGeometry = new THREE.TorusGeometry(1.4, 0.015, 8, 32, Math.PI); // Radio aumentado
+    const lineMaterial = new THREE.LineBasicMaterial({ 
+      color: 0xffffff,
+      linewidth: 2
+    });
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    line.rotation.y = (i * Math.PI) / 4; // Cambiado a 4 para 8 líneas (2π/8 = π/4)
+    line.rotation.z = Math.PI / 2;
+    this.group.add(line);
+  }
+
+  // 🔗 Líneas de conexión entre puntos - MÁS ESPACIADAS
+  for (let i = 0; i < 6; i++) { // Reducido de 8 a 6 conexiones
+    const lat = Math.PI * (Math.random() - 0.5);
+    const lon = 2 * Math.PI * Math.random();
+    
+    const x1 = Math.cos(lat) * Math.cos(lon) * 1.4; // Radio aumentado
+    const y1 = Math.sin(lat) * 1.4;
+    const z1 = Math.cos(lat) * Math.sin(lon) * 1.4;
+    
+    // Puntos más separados (aumentado de 0.3 a 0.5)
+    const x2 = Math.cos(lat + 0.5) * Math.cos(lon + 0.5) * 1.4;
+    const y2 = Math.sin(lat + 0.5) * 1.4;
+    const z2 = Math.cos(lat + 0.5) * Math.sin(lon + 0.5) * 1.4;
+    
+    const points = [];
+    points.push(new THREE.Vector3(x1, y1, z1));
+    points.push(new THREE.Vector3(x2, y2, z2));
+    
+    const connectionGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    const connectionMaterial = new THREE.LineBasicMaterial({ 
+      color: 0x00ff88,
+      linewidth: 2
+    });
+    const connection = new THREE.Line(connectionGeometry, connectionMaterial);
+    this.group.add(connection);
+  }
+
+  // Ajustar escala general - MANTENIENDO LA ESCALA ORIGINAL
+  this.group.scale.set(0.7, 0.7, 0.7);
+
+  this.scene.add(this.group);
+}
+animate() {
+  requestAnimationFrame(() => this.animate());
+  if (this.group) {
+    // Usar la velocidad específica para este objeto si está definida, 
+    // de lo contrario usar la velocidad por defecto (0.01)
+    const speed = this.rotationSpeed !== undefined ? this.rotationSpeed : 0.009;
+    this.group.rotation.y += speed;
+    
+    // Animación adicional para el satélite (si existe)
+    if (this.satellite) {
+      this.satellite.position.x = 1.5 * Math.cos(performance.now() * 0.001);
+      this.satellite.position.z = 1.5 * Math.sin(performance.now() * 0.001);
+    }
+  }
+  this.renderer.render(this.scene, this.camera);
+}}
+
+document.addEventListener("DOMContentLoaded", () => {
+  new Icon3D("tablet-canvas", "tablet");
+  new Icon3D("heart-canvas", "heart");
+  new Icon3D("education-canvas", "web");
+});
+</script>
+
+
+
+<body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen" aria-live="polite" aria-label="Cargando aplicación">
         <div class="loading-logo">Sentio</div>
@@ -35,8 +236,9 @@ min-height: 100px; }
             <nav class="nav" role="navigation" aria-label="Menú principal">
                 <ul>
                     <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#funcionalidades">Funcionalidades</a></li>
+                    <li><a href="#funcionalidades">Nuestro producto</a></li>
                     <li><a href="#soporte">Soporte Técnico</a></li>
+                    <li><a href="#quienes">¿Quienes somos?</a></li>
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
             </nav>
@@ -52,7 +254,7 @@ min-height: 100px; }
             <a href="#funcionalidades" class="cta-button">Descubrí Sentio</a>
         </div>
     </section>
-
+    
     <!-- Introduction -->
     <section class="section" aria-labelledby="que-es-sentio">
         <h2 id="que-es-sentio">¿Qué es Sentio Desk?</h2>
@@ -62,17 +264,23 @@ min-height: 100px; }
         </p>
         <div class="features-grid">
             <div class="feature-icon">
-                <div class="icon" aria-hidden="true">✎</div>
+                <div class="icon-container" style="display: flex;justify-content: center;align-items: center;">
+                    <canvas class="icon-3d" id="tablet-canvas"></canvas>
+                </div>
                 <h3>Pizarra táctil</h3>
                 <p>Pantalla integrada en la mesa con acceso a internet.</p>
             </div>
             <div class="feature-icon">
-                <div class="icon" aria-hidden="true">❤︎</div>
+                <div class="icon-container" style="display: flex;justify-content: center;align-items: center;">
+                    <canvas class="icon-3d" id="heart-canvas"></canvas>
+                </div>
                 <h3>Sensores biométricos</h3>
                 <p>Monitoreo de pulso, estrés y bienestar en tiempo real con análisis predictivo</p>
             </div>
             <div class="feature-icon">
-                <div class="icon" aria-hidden="true">⚛</div>
+                <div class="icon-container" style="display: flex;justify-content: center;align-items: center;">
+                     <canvas class="icon-3d" id="education-canvas"></canvas>
+                </div>
                 <h3>Plataforma educativa</h3>
                 <p>Comunicación integrada entre profesor-alumno</p>
             </div>
