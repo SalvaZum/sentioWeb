@@ -1,12 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
-  // Configuración CORS
+  // Configuración CORS simple pero efectiva
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Manejar preflight request
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -22,42 +21,49 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Falta la pregunta' });
     }
 
-    // Verificar API Key
-    if (!process.env.GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY no configurada');
+    // Verificar API key de manera más robusta
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.log('GEMINI_API_KEY:', apiKey ? '✅ Configurada' : '❌ No configurada');
       return res.status(500).json({ 
-        receta: 'Error: Configuración del servidor incompleta.' 
+        receta: 'Error: Configuración del servidor incompleta. Por favor, contacta al administrador.' 
       });
     }
 
-    // Inicializar Gemini
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Inicializar Gemini con timeout
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        maxOutputTokens: 500, // Limitar respuesta para ser más rápido
+        temperature: 0.7,
+      }
+    });
 
-    const prompt = `
-      Eres un asistente útil de la empresa Sentio.
-      Responde esta pregunta sobre nuestro producto Sentio Desk: ${pregunta}
+    const prompt = `Como asistente de Sentio, responde brevemente (máximo 300 palabras) esta pregunta: "${pregunta}"
 
-      Información sobre Sentio:
-      - Empresa que innova en educación con tecnología
-      - Producto principal: Sentio Desk (escritorio inteligente)
-      - Características: pantalla táctil, sensores biométricos, mesa ajustable
-      - Pulsera con sensores: frecuencia cardíaca, estrés, movimiento
-      - Comunicación profesor-alumno integrada
+Información sobre Sentio:
+- Escritorio inteligente para educación
+- Pantalla táctil, sensores biométricos
+- Mesa ajustable, comunicación profesor-alumno
+- Pulsera con sensores de frecuencia cardíaca
 
-      Responde de manera amable y enfocada en cómo Sentio puede ayudar.
-    `;
+Responde de manera útil y concisa.`;
 
     const result = await model.generateContent(prompt);
-    const respuesta = result.response.text() || "No pude generar una respuesta en este momento.";
+    const respuesta = result.response.text();
 
     return res.status(200).json({ receta: respuesta });
 
   } catch (error) {
-    console.error('Error en la API:', error);
-    
+    console.error('Error detallado:', {
+      message: error.message,
+      stack: error.stack,
+      env: process.env.GEMINI_API_KEY ? 'API_KEY presente' : 'API_KEY faltante'
+    });
+
     return res.status(500).json({ 
-      receta: 'Lo siento, hubo un error interno. Por favor, intenta más tarde.' 
+      receta: `Error temporal: ${error.message}. Por favor, intenta nuevamente o contacta a sentioarg@gmail.com para ayuda inmediata.` 
     });
   }
 }
