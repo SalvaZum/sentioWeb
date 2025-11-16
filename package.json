@@ -1,15 +1,11 @@
 {
   "name": "sentio-web",
   "version": "1.0.0",
-  "description": "Sitio web de Sentio - Escritorio Inteligente",
   "type": "module",
   "scripts": {
-    "dev": "npx serve . -p 5500"
+    "dev": "node server.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0"
-  },
-  "devDependencies": {
-    "vite": "^5.0.0"
   }
 }

@@ -440,6 +440,34 @@ generarBtn.addEventListener('click', async () => {
     generarBtn.disabled = false;
     generarBtn.textContent = originalText;
 });
+// Sistema de respuestas inteligentes como fallback
+function obtenerRespuestaInteligente(pregunta) {
+    const p = pregunta.toLowerCase();
+    
+    // Respuestas básicas para cuando la API falle
+    if (p.includes('que es sentio') || p.includes('qué es sentio')) {
+        return `Sentio es una empresa innovadora que desarrolla el <strong>Sentio Desk</strong>, un escritorio inteligente que combina una pantalla táctil interactiva con sensores biométricos para revolucionar la educación.`;
+    } else if (p.includes('precio') || p.includes('cuesta') || p.includes('valor')) {
+        return `Ofrecemos soluciones personalizadas para instituciones educativas. Para información detallada de precios, contáctanos en: <strong>sentioarg@gmail.com</strong>`;
+    } else if (p.includes('contacto') || p.includes('email') || p.includes('correo')) {
+        return `📧 <strong>Email:</strong> sentioarg@gmail.com<br>
+📍 <strong>Ubicación:</strong> Córdoba, Argentina<br>
+📱 <strong>Instagram:</strong> @sentio.ar`;
+    } else {
+        return `¡Hola! He recibido tu pregunta: "<em>${pregunta}</em>"<br><br>
+Nuestra IA está teniendo dificultades técnicas momentáneas. Mientras tanto, te invito a contactarnos directamente:<br><br>
+<strong>📧 sentioarg@gmail.com</strong><br><br>
+Estaremos encantados de responder todas tus preguntas sobre Sentio Desk.`;
+    }
+}
+
+// Mejorar UX - Enter para enviar
+mensaje.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        generarBtn.click();
+    }
+});
     </script>
 
     </div>
