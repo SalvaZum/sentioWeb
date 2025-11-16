@@ -1,17 +1,17 @@
 {
-  "name": "chefia",
+  "name": "sentio-web",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Sitio web de Sentio - Escritorio Inteligente",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0"
+    "@google/generative-ai": "^0.21.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
   }
 }

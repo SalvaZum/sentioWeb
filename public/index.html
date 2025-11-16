@@ -346,8 +346,8 @@ const generarBtn = document.getElementById('generarBtn');
 const mensaje = document.getElementById('msj');
 const respuestaDiv = document.getElementById('respuesta');
 
-// URL de la API - usa siempre la de Vercel para evitar problemas de CORS
-const API_URL = 'https://sentio-web.vercel.app/api/generar-solucion';
+// URL de la API
+const API_URL = '/api/generar-solucion';
 
 generarBtn.addEventListener('click', async () => {
     if (!mensaje.value.trim()) {
@@ -355,72 +355,165 @@ generarBtn.addEventListener('click', async () => {
         return;
     }
 
-    // Guardar el estado original
     const originalText = generarBtn.textContent;
-    
     generarBtn.disabled = true;
-    generarBtn.textContent = 'Pensando...';
-    respuestaDiv.textContent = 'Procesando tu pregunta con nuestra IA...';
+    generarBtn.textContent = 'Consultando IA...';
+    
+    // Mostrar animación de carga
+    respuestaDiv.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <div style="display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #0B1D51; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 10px; color: #666;">Consultando a nuestra IA...</p>
+        </div>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    `;
 
     try {
-        console.log('Enviando pregunta a:', API_URL);
-        
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ pregunta: mensaje.value.trim() })
+            body: JSON.stringify({ 
+                pregunta: mensaje.value.trim() 
+            })
         });
 
-        console.log('Respuesta recibida:', response.status);
-
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Error ${response.status}: ${errorText || response.statusText}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.receta || `Error ${response.status}`);
         }
 
         const data = await response.json();
         
         if (data.receta) {
             respuestaDiv.textContent = data.receta;
-        } else if (data.error) {
-            throw new Error(data.error);
         } else {
             throw new Error('Respuesta inválida del servidor');
         }
         
     } catch (error) {
-        console.error('Error completo:', error);
+        console.error('Error:', error);
         
-        // Mensaje de error más específico
-        let errorMessage = 'Error de conexión. ';
-        
-        if (error.message.includes('CORS') || error.message.includes('Origin')) {
-            errorMessage += 'Problema de CORS. ';
-        }
-        
-        if (error.message.includes('405')) {
-            errorMessage += 'Método no permitido. ';
-        }
-        
-        errorMessage += 'Puede que la API no esté disponible en este momento. ';
-        errorMessage += 'Te sugerimos contactarnos directamente en sentioarg@gmail.com';
-        
-        respuestaDiv.textContent = errorMessage;
-        
+        // Respuesta de fallback mejorada
+        const fallbackResponse = generarRespuestaFallback(mensaje.value);
+        respuestaDiv.innerHTML = `
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 15px; margin-bottom: 10px;">
+                <strong>⚠️ Conexión limitada</strong><br>
+                Nuestra IA está experimentando problemas técnicos temporales.
+            </div>
+            <div style="padding: 10px;">
+                ${fallbackResponse}
+            </div>
+            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 14px;">
+                <strong>💡 ¿Necesitas ayuda inmediata?</strong><br>
+                Contacta a nuestro equipo: <a href="mailto:sentioarg@gmail.com" style="color: #0B1D51; text-decoration: none;">sentioarg@gmail.com</a>
+            </div>
+        `;
     } finally {
         generarBtn.disabled = false;
         generarBtn.textContent = originalText;
     }
 });
 
-// Permitir enviar con Enter
+function generarRespuestaFallback(pregunta) {
+    const p = pregunta.toLowerCase().trim();
+    
+    const respuestas = {
+        'que es sentio': `Sentio es una empresa innovadora que ha desarrollado el <strong>Sentio Desk</strong>, un escritorio inteligente diseñado para revolucionar la educación mediante la combinación de tecnología táctil avanzada y sensores biométricos.`,
+
+        'funcionalidades': `El Sentio Desk incluye estas funcionalidades principales:<br><br>
+• <strong>Pantalla táctil integrada</strong> con computadora Raspberry Pi<br>
+• <strong>Sensores biométricos</strong> para monitoreo de frecuencia cardíaca y estrés<br>
+• <strong>Mesa ajustable ergonómicamente</strong> para mayor comodidad<br>
+• <strong>Sistema de comunicación</strong> directo profesor-alumno<br>
+• <strong>Almacenamiento digital</strong> que reduce el uso de papel<br>
+• <strong>Pulsera biométrica</strong> con sensores de movimiento y frecuencia cardíaca`,
+
+        'precio': `Ofrecemos planes personalizados para instituciones educativas. Para obtener información detallada sobre precios y cotizaciones específicas, te invitamos a contactarnos directamente:<br><br>
+<strong>📧 sentioarg@gmail.com</strong><br><br>
+Estaremos encantados de preparar una propuesta adaptada a tus necesidades.`,
+
+        'tecnologia': `Tecnología utilizada en Sentio Desk:<br><br>
+• <strong>ESP32 mini</strong> para procesamiento de datos<br>
+• <strong>Sensor MAX30102</strong> para medición cardíaca precisa<br>
+• <strong>MPU6050</strong> para detección de movimiento y posición<br>
+• <strong>Raspberry Pi</strong> como sistema computacional principal<br>
+• <strong>Batería recargable</strong> para la pulsera biométrica`,
+
+        'contacto': `Puedes contactarnos a través de:<br><br>
+📧 <strong>Email:</strong> sentioarg@gmail.com<br>
+📍 <strong>Ubicación:</strong> Córdoba, Argentina<br>
+📱 <strong>Instagram:</strong> @sentio.ar<br>
+🎵 <strong>TikTok:</strong> @sentiodesk<br><br>
+¡Estamos aquí para ayudarte!`,
+
+        'default': `¡Hola! Soy el asistente de Sentio. He recibido tu pregunta: "<em>${pregunta}</em>"<br><br>
+Puedo proporcionarte información sobre:<br>
+• ¿Qué es Sentio Desk?<br>
+• Funcionalidades y características<br>
+• Tecnología utilizada<br>
+• Información de contacto y precios<br>
+• Beneficios para la educación<br><br>
+¿En qué aspecto específico te gustaría que te ayude?`
+    };
+
+    // Búsqueda de coincidencias
+    for (const [key, value] of Object.entries(respuestas)) {
+        if (p.includes(key)) {
+            return value;
+        }
+    }
+
+    // Búsqueda por palabras clave
+    const keywords = {
+        'cuesta': 'precio',
+        'valor': 'precio',
+        'compra': 'precio',
+        'funciona': 'tecnologia',
+        'sensor': 'tecnologia',
+        'hardware': 'tecnologia',
+        'email': 'contacto',
+        'correo': 'contacto',
+        'instagram': 'contacto',
+        'redes': 'contacto'
+    };
+
+    for (const [keyword, tema] of Object.entries(keywords)) {
+        if (p.includes(keyword)) {
+            return respuestas[tema];
+        }
+    }
+
+    return respuestas.default;
+}
+
+// Mejorar UX
 mensaje.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         generarBtn.click();
     }
+});
+
+// Mensaje de bienvenida
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        if (!respuestaDiv.textContent || respuestaDiv.textContent.includes('aparecera')) {
+            respuestaDiv.innerHTML = `
+                <div style="color: #0B1D51; margin-bottom: 10px; font-weight: bold;">
+                    🤖 Asistente IA de Sentio
+                </div>
+                ¡Hola! Estoy aquí para responder tus preguntas sobre nuestro escritorio inteligente Sentio Desk. 
+                ¿En qué puedo ayudarte hoy?
+            `;
+        }
+    }, 1000);
 });
 </script>
 
