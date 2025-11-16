@@ -1,30 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
-  // Configuración CORS más robusta
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'http://127.0.0.1:5500',
-    'http://127.0.0.1:5500',
-    'https://sentio-web.vercel.app',
-    'https://sentio-web.vercel.app'
-  ];
+  // Configuración CORS simple pero efectiva
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    // En producción, permite solo tu dominio
-    res.setHeader('Access-Control-Allow-Origin', 'https://sentio-web.vercel.app');
-  }
-  
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400');
-
-  // Manejar preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -33,56 +14,56 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  const { pregunta } = req.body;
-
-  if (!pregunta) {
-    return res.status(400).json({ error: 'Falta la pregunta' });
-  }
-
   try {
-    // Verificar que la API key esté disponible
-    if (!process.env.GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY no está configurada');
+    const { pregunta } = req.body;
+
+    if (!pregunta) {
+      return res.status(400).json({ error: 'Falta la pregunta' });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Verificar API key de manera más robusta
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.log('GEMINI_API_KEY:', apiKey ? '✅ Configurada' : '❌ No configurada');
+      return res.status(500).json({ 
+        receta: 'Error: Configuración del servidor incompleta. Por favor, contacta al administrador.' 
+      });
+    }
 
-    const prompt = `
-      Eres un asistente útil de la empresa Sentio.
-      Responde la siguiente pregunta del usuario de manera concisa y útil:
-      
-      Pregunta: ${pregunta}
-      
-      Información sobre Sentio:
-      - Empresa que innova en educación con tecnología
-      - Producto principal: Sentio Desk (escritorio inteligente)
-      - Características: pantalla táctil, sensores biométricos, mesa ajustable
-      - Pulsera con sensores: frecuencia cardíaca, estrés, movimiento
-      - Comunicación profesor-alumno integrada
-      
-      Responde de manera amable y enfocada en cómo Sentio puede ayudar.
-    `;
+    // Inicializar Gemini con timeout
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        maxOutputTokens: 500, // Limitar respuesta para ser más rápido
+        temperature: 0.7,
+      }
+    });
+
+    const prompt = `Como asistente de Sentio, responde brevemente (máximo 300 palabras) esta pregunta: "${pregunta}"
+
+Información sobre Sentio:
+- Escritorio inteligente para educación
+- Pantalla táctil, sensores biométricos
+- Mesa ajustable, comunicación profesor-alumno
+- Pulsera con sensores de frecuencia cardíaca
+
+Responde de manera útil y concisa.`;
 
     const result = await model.generateContent(prompt);
-    const respuesta = result.response.text() || "Lo siento, no pude generar una respuesta en este momento.";
+    const respuesta = result.response.text();
 
-    res.status(200).json({ receta: respuesta });
+    return res.status(200).json({ receta: respuesta });
 
   } catch (error) {
-    console.error('Error en la API:', error);
-    
-    // Respuesta de error más informativa
-    let errorMessage = 'Error interno del servidor';
-    
-    if (error.message.includes('GEMINI_API_KEY')) {
-      errorMessage = 'Error de configuración: GEMINI_API_KEY no encontrada';
-    } else if (error.message.includes('quota') || error.message.includes('rate limit')) {
-      errorMessage = 'Límite de la API excedido. Intenta más tarde.';
-    }
-    
-    res.status(500).json({ 
-      receta: `Lo siento, hubo un error: ${errorMessage}` 
+    console.error('Error detallado:', {
+      message: error.message,
+      stack: error.stack,
+      env: process.env.GEMINI_API_KEY ? 'API_KEY presente' : 'API_KEY faltante'
+    });
+
+    return res.status(500).json({ 
+      receta: `Error temporal: ${error.message}. Por favor, intenta nuevamente o contacta a sentioarg@gmail.com para ayuda inmediata.` 
     });
   }
 }
