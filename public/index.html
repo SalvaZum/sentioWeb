@@ -74,14 +74,14 @@
             createTablet() {
                 this.group = new THREE.Group();
 
-                // 📱 Cuerpo de la tablet (marco) - Reducido en ancho
-                const bodyGeometry = new THREE.BoxGeometry(1.6, 1.2, 0.1); // Ancho reducido de 2 a 1.6
+                // 📱 Cuerpo de la tablet (marco) - MÁS angosto
+                const bodyGeometry = new THREE.BoxGeometry(1.2, 1.2, 0.1); // Ancho reducido de 1.6 a 1.2
                 const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x0B1D51, shininess: 80 });
                 const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
                 this.group.add(body);
 
-                // 🔵 Pantalla - Reducida en ancho
-                const screenGeometry = new THREE.BoxGeometry(1.4, 1.0, 0.02); // Ancho reducido de 1.8 a 1.4
+                // 🔵 Pantalla - MÁS angosta
+                const screenGeometry = new THREE.BoxGeometry(1.0, 1.0, 0.02); // Ancho reducido de 1.4 a 1.0
                 const screenMaterial = new THREE.MeshPhongMaterial({ 
                     color: 0x0072CE,
                     emissive: 0x001a33,
@@ -99,17 +99,17 @@
                 button.position.set(0, -0.55, 0.06);
                 this.group.add(button);
 
-                // 📊 Líneas en la pantalla (apps o texto) - Reducidas en ancho
+                // 📊 Líneas en la pantalla (apps o texto) - MÁS angostas
                 for (let i = 0; i < 3; i++) {
-                    const lineGeometry = new THREE.BoxGeometry(0.8, 0.05, 0.01); // Ancho reducido de 1.0 a 0.8
+                    const lineGeometry = new THREE.BoxGeometry(0.6, 0.05, 0.01); // Ancho reducido de 0.8 a 0.6
                     const lineMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, opacity: 0.8, transparent: true });
                     const line = new THREE.Mesh(lineGeometry, lineMaterial);
                     line.position.set(0, 0.3 - i * 0.3, 0.07);
                     this.group.add(line);
                 }
 
-                // Escala final
-                this.group.scale.set(1, 1, 1);
+                // Escala final - Aplicar escala horizontal adicional
+                this.group.scale.set(0.9, 1, 1); // Reducir ancho al 90%
                 this.scene.add(this.group);
             }
 
@@ -119,10 +119,10 @@
 
                 const shape = new THREE.Shape();
                 shape.moveTo(0, 0.25);
-                shape.bezierCurveTo(0, 0, -0.5, 0, -0.5, 0.25);
-                shape.bezierCurveTo(-0.5, 0.55, 0, 0.8, 0, 1);
-                shape.bezierCurveTo(0, 0.8, 0.5, 0.55, 0.5, 0.25);
-                shape.bezierCurveTo(0.5, 0, 0, 0, 0, 0.25);
+                shape.bezierCurveTo(0, 0, -0.4, 0, -0.4, 0.25); // Reducir ancho del corazón
+                shape.bezierCurveTo(-0.4, 0.55, 0, 0.8, 0, 1);
+                shape.bezierCurveTo(0, 0.8, 0.4, 0.55, 0.4, 0.25); // Reducir ancho del corazón
+                shape.bezierCurveTo(0.4, 0, 0, 0, 0, 0.25);
 
                 const heartGeometry = new THREE.ExtrudeGeometry(shape, { 
                     depth: 0.2, 
@@ -144,7 +144,7 @@
                 this.group.add(heartMesh);
                 
                 // Escala más angosta (reducida en X)
-                this.group.scale.set(1.5, 1.8, 1.8); // Ancho reducido de 1.8 a 1.5
+                this.group.scale.set(1.2, 1.8, 1.8); // Ancho reducido de 1.5 a 1.2
                 
                 // Centrar el grupo completo
                 this.group.position.y = 0.1;
@@ -156,8 +156,8 @@
             createWebGlobe() {
                 this.group = new THREE.Group();
 
-                // 🌎 Esfera principal (estructura de líneas) - Reducida en X
-                const sphereGeometry = new THREE.SphereGeometry(1.5, 10, 10);
+                // 🌎 Esfera principal (estructura de líneas) - MÁS angosta
+                const sphereGeometry = new THREE.SphereGeometry(1.3, 10, 10); // Radio reducido
                 const edges = new THREE.EdgesGeometry(sphereGeometry);
                 const lineMaterial = new THREE.LineBasicMaterial({ 
                     color: 0x54b2ff, 
@@ -166,13 +166,13 @@
                 const wireframe = new THREE.LineSegments(edges, lineMaterial);
                 
                 // Escalar para hacer más angosto
-                wireframe.scale.x = 0.8; // Reducir ancho al 80%
+                wireframe.scale.x = 0.6; // Reducir ancho al 60% (antes 0.8)
                 
                 this.group.add(wireframe);
 
                 // 📍 Meridianos (líneas verticales)
                 for (let i = 0; i < 8; i++) {
-                    const lineGeometry = new THREE.TorusGeometry(1.4, 0.015, 8, 32, Math.PI);
+                    const lineGeometry = new THREE.TorusGeometry(1.2, 0.015, 8, 32, Math.PI); // Radio reducido
                     const lineMaterial = new THREE.LineBasicMaterial({ 
                         color: 0xffffff,
                         linewidth: 2
@@ -182,23 +182,23 @@
                     line.rotation.z = Math.PI / 2;
                     
                     // Escalar para hacer más angosto
-                    line.scale.x = 0.8; // Reducir ancho al 80%
+                    line.scale.x = 0.6; // Reducir ancho al 60% (antes 0.8)
                     
                     this.group.add(line);
                 }
 
-                // 🔗 Líneas de conexión entre puntos
+                // 🔗 Líneas de conexión entre puntos - MÁS cortas
                 for (let i = 0; i < 6; i++) {
                     const lat = Math.PI * (Math.random() - 0.5);
                     const lon = 2 * Math.PI * Math.random();
                     
-                    const x1 = Math.cos(lat) * Math.cos(lon) * 1.4;
-                    const y1 = Math.sin(lat) * 1.4;
-                    const z1 = Math.cos(lat) * Math.sin(lon) * 1.4;
+                    const x1 = Math.cos(lat) * Math.cos(lon) * 1.2; // Radio reducido
+                    const y1 = Math.sin(lat) * 1.2;
+                    const z1 = Math.cos(lat) * Math.sin(lon) * 1.2;
                     
-                    const x2 = Math.cos(lat + 0.5) * Math.cos(lon + 0.5) * 1.4;
-                    const y2 = Math.sin(lat + 0.5) * 1.4;
-                    const z2 = Math.cos(lat + 0.5) * Math.sin(lon + 0.5) * 1.4;
+                    const x2 = Math.cos(lat + 0.5) * Math.cos(lon + 0.5) * 1.2; // Radio reducido
+                    const y2 = Math.sin(lat + 0.5) * 1.2;
+                    const z2 = Math.cos(lat + 0.5) * Math.sin(lon + 0.5) * 1.2;
                     
                     const points = [];
                     points.push(new THREE.Vector3(x1, y1, z1));
@@ -214,7 +214,7 @@
                 }
 
                 // Ajustar escala general - Reducir más en X para hacer angosto
-                this.group.scale.set(0.6, 0.7, 0.7); // Ancho reducido de 0.7 a 0.6
+                this.group.scale.set(0.5, 0.7, 0.7); // Ancho reducido de 0.6 a 0.5
 
                 this.scene.add(this.group);
             }
