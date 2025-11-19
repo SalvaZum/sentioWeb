@@ -379,7 +379,7 @@ generarBtn.addEventListener('click', async () => {
     // Intentar con cada endpoint hasta que uno funcione
     for (let i = 0; i < API_ENDPOINTS.length; i++) {
         try {
-            const endpoint = API_ENDPOINTS[currentEndpoint];
+            const endpoint = API_ENDPOINTS[i];
             console.log(`🔗 Intentando endpoint: ${endpoint}`);
             
             const response = await fetch(endpoint, {
@@ -387,7 +387,7 @@ generarBtn.addEventListener('click', async () => {
                 headers: { 
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ pregunta })
+                body: JSON.stringify({ pregunta: mensaje.value.trim() })  
             });
 
             console.log(`📊 Response status: ${response.status}`);

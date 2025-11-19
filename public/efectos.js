@@ -252,20 +252,28 @@
 
 //Api GEMINI
 generarBtn.addEventListener("click", async () => {
-  const prompt = mensaje.value; // tomamos el texto del usuario
+  const prompt = mensaje.value.trim(); // texto del usuario
 
-  // Fetch hacia la función serverless
+  if (!prompt) {
+    respuestaDiv.textContent = "Por favor, escribe algo.";
+    return;
+  }
+
   try {
-    const res = await fetch("/api/gemini", {
+    respuestaDiv.textContent = "Pensando...";
+
+    const res = await fetch("/api/generar-solucion", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ pregunta: prompt })
     });
 
     const data = await res.json();
-    respuestaDiv.textContent = data.receta || "Error al obtener respuesta";
+
+    respuestaDiv.textContent =
+      data.respuesta || "No pudimos generar una respuesta";
   } catch (error) {
-    respuestaDiv.textContent = "Seguimos pensando...";
+    respuestaDiv.textContent = "Error al conectar con la API";
     console.error(error);
   }
 });
