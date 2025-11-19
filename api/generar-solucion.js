@@ -19,25 +19,28 @@ export default async function handler(req, res) {
       return;
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: pregunta }]
-        }
-      ]
+    if (!apiKey) {
+      return res.status(500).json({ error: "API Key no configurada" });
+    }
+
+    // 🚀 Inicializar Gemini con modelo válido
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash", // Modelo correcto
     });
 
-    const respuesta =
-      result.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    const result = await model.generateContent(pregunta);
+
+    const respuesta = result.response.text() || 
       "No pudimos generar la respuesta";
 
     res.status(200).json({ respuesta });
+
   } catch (error) {
     console.error("ERROR API:", error);
     res.status(500).json({ error: "Error interno en la API" });
   }
 }
+  
