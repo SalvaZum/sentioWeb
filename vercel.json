@@ -1,32 +1,11 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/generar-solucion.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**/*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "public/**/*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "public/**/*.js",
-      "use": "@vercel/static"
-    }
+    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "public/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/api/generar-solucion",
-      "dest": "/api/generar-solucion.js",
-      "methods": ["POST", "OPTIONS"]
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
+    { "src": "/api/generar-solucion", "dest": "/api/generar-solucion.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
