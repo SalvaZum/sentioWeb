@@ -250,6 +250,9 @@
             app.init();
         });
 
+    const mensaje = document.getElementById("msj");
+    const generarBtn = document.getElementById("generarBtn");
+    const respuestaDiv = document.getElementById("respuesta");
     //Api GEMINI
     generarBtn.addEventListener("click", async () => {
     const prompt = mensaje.value.trim(); // texto del usuario
