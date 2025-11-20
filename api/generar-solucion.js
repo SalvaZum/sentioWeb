@@ -1,4 +1,7 @@
 export default async function handler(req, res) {
+  const models = await genAI.listModels();
+console.log(models);
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
@@ -28,14 +31,21 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    // MUESTRA LA RESPUESTA COMPLETA EN VERCEL LOGS
+    console.log("RAW GOOGLE RESPONSE:", JSON.stringify(data, null, 2));
+
+    // Sacar texto de todos los formatos posibles
     const respuesta =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data?.text ||
+      data?.output_text ||
+      data?.contents?.[0]?.parts?.[0]?.text ||
       "No pude generar respuesta";
 
-    res.status(200).json({ respuesta });
+    return res.status(200).json({ respuesta });
 
   } catch (error) {
     console.error("API ERROR:", error);
-    res.status(500).json({ error: "Error interno en la API" });
+    return res.status(500).json({ error: "Error interno en la API" });
   }
 }
