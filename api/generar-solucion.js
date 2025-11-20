@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     // 🚀 Inicializar Gemini con modelo válido
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // Modelo correcto
+      model: "gemini-1.5-pro", // Modelo correcto
     });
 
     const result = await model.generateContent(pregunta);
@@ -43,4 +43,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Error interno en la API" });
   }
 }
-  
