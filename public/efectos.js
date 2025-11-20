@@ -250,30 +250,30 @@
             app.init();
         });
 
-//Api GEMINI
-generarBtn.addEventListener("click", async () => {
-  const prompt = mensaje.value.trim(); // texto del usuario
+    //Api GEMINI
+    generarBtn.addEventListener("click", async () => {
+    const prompt = mensaje.value.trim(); // texto del usuario
 
-  if (!prompt) {
-    respuestaDiv.textContent = "Por favor, escribe algo.";
-    return;
-  }
+    if (!prompt) {
+        respuestaDiv.textContent = "Por favor, escribe algo.";
+        return;
+    }
 
-  try {
-    respuestaDiv.textContent = "Pensando...";
+    try {
+        respuestaDiv.textContent = "Pensando...";
 
-    const res = await fetch("/api/generar-solucion", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pregunta: prompt })
+        const res = await fetch("/api/generar-solucion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pregunta: prompt })
+        });
+
+        const data = await res.json();
+
+        respuestaDiv.textContent =
+        data.respuesta || "No pudimos generar una respuesta";
+    } catch (error) {
+        respuestaDiv.textContent = "Error al conectar con la API";
+        console.error(error);
+    }
     });
-
-    const data = await res.json();
-
-    respuestaDiv.textContent =
-      data.respuesta || "No pudimos generar una respuesta";
-  } catch (error) {
-    respuestaDiv.textContent = "Error al conectar con la API";
-    console.error(error);
-  }
-});

@@ -338,139 +338,8 @@
     <textarea id="msj" class="msj" placeholder="Ej: ¿Que es SentioDesk?" style="::placeholder{color: black;}"></textarea>
     <button id="generarBtn">Preguntar</button>
     <div id="respuesta">Aqui aparecera tu respuesta...</div>
-
-    <script>
-const generarBtn = document.getElementById('generarBtn');
-const mensaje = document.getElementById('msj');
-const respuestaDiv = document.getElementById('respuesta');
-
-// Múltiples endpoints de respaldo CORREGIDOS
-const API_ENDPOINTS = [
-    '/api/generar-solucion',
-    'https://sentio-web.vercel.app/api/generar-solucion',
-    'https://sentio-web.vercel.app/api/generar-solucion.js'
-];
-
-let currentEndpoint = 0;
-
-generarBtn.addEventListener('click', async () => {
-    if (!mensaje.value.trim()) {
-        alert('Por favor, escribe tu pregunta.');
-        return;
-    }
-
-    const originalText = generarBtn.textContent;
-    generarBtn.disabled = true;
-    generarBtn.textContent = 'Pensando...';
-    
-    // Mostrar estado de carga
-    respuestaDiv.innerHTML = `
-        <div style="text-align: center; padding: 20px; color: #666;">
-            <div style="display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #0B1D51; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            <p style="margin-top: 10px;">Consultando a nuestra IA...</p>
-        </div>
-        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-    `;
-
-    const pregunta = mensaje.value.trim();
-    let success = false;
-    let lastError = '';
-
-    // Intentar con cada endpoint hasta que uno funcione
-    for (let i = 0; i < API_ENDPOINTS.length; i++) {
-        try {
-            const endpoint = API_ENDPOINTS[i];
-            console.log(`🔗 Intentando endpoint: ${endpoint}`);
-            
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ pregunta: mensaje.value.trim() })  
-            });
-
-            console.log(`📊 Response status: ${response.status}`);
-            
-            if (response.ok) {
-                const data = await response.json();
-                console.log('✅ Respuesta recibida:', data);
-                
-                if (data.receta) {
-                    respuestaDiv.innerHTML = `
-                        <div style="color: #0B1D51; margin-bottom: 10px; font-size: 16px; font-weight: bold;">
-                            🤖 Asistente IA de Sentio
-                        </div>
-                        <div style="line-height: 1.6; white-space: pre-wrap;">${data.receta}</div>
-                    `;
-                    success = true;
-                    break;
-                }
-            } else {
-                lastError = `Error ${response.status}: ${response.statusText}`;
-                console.error(`❌ ${lastError}`);
-            }
-        } catch (error) {
-            lastError = error.message;
-            console.error(`❌ Endpoint ${API_ENDPOINTS[currentEndpoint]} falló:`, error.message);
-        }
-        
-        // Rotar al siguiente endpoint
-        currentEndpoint = (currentEndpoint + 1) % API_ENDPOINTS.length;
-    }
-
-    // Si todos los endpoints fallaron, usar respuestas predefinidas
-    if (!success) {
-        console.log('🎯 Usando respuestas predefinidas');
-        const respuestaFallback = obtenerRespuestaInteligente(pregunta);
-        respuestaDiv.innerHTML = `
-            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 15px; border-radius: 4px;">
-                <strong>⚡ Modo Respuesta Rápida</strong><br>
-                <small>Nuestra IA está optimizando su rendimiento. Error: ${lastError}</small>
-            </div>
-            <div style="line-height: 1.6;">${respuestaFallback}</div>
-            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; border: 1px solid #e9ecef;">
-                <strong>¿Necesitas más ayuda?</strong><br>
-                Nuestro equipo está disponible en:<br>
-                📧 <a href="mailto:sentioarg@gmail.com" style="color: #0B1D51; text-decoration: none;">sentioarg@gmail.com</a>
-            </div>
-        `;
-    }
-
-    generarBtn.disabled = false;
-    generarBtn.textContent = originalText;
-});
-// Sistema de respuestas inteligentes como fallback
-function obtenerRespuestaInteligente(pregunta) {
-    const p = pregunta.toLowerCase();
-    
-    // Respuestas básicas para cuando la API falle
-    if (p.includes('que es sentio') || p.includes('qué es sentio')) {
-        return `Sentio es una empresa innovadora que desarrolla el <strong>Sentio Desk</strong>, un escritorio inteligente que combina una pantalla táctil interactiva con sensores biométricos para revolucionar la educación.`;
-    } else if (p.includes('precio') || p.includes('cuesta') || p.includes('valor')) {
-        return `Ofrecemos soluciones personalizadas para instituciones educativas. Para información detallada de precios, contáctanos en: <strong>sentioarg@gmail.com</strong>`;
-    } else if (p.includes('contacto') || p.includes('email') || p.includes('correo')) {
-        return `📧 <strong>Email:</strong> sentioarg@gmail.com<br>
-📍 <strong>Ubicación:</strong> Córdoba, Argentina<br>
-📱 <strong>Instagram:</strong> @sentio.ar`;
-    } else {
-        return `¡Hola! He recibido tu pregunta: "<em>${pregunta}</em>"<br><br>
-Nuestra IA está teniendo dificultades técnicas momentáneas. Mientras tanto, te invito a contactarnos directamente:<br><br>
-<strong>📧 sentioarg@gmail.com</strong><br><br>
-Estaremos encantados de responder todas tus preguntas sobre Sentio Desk.`;
-    }
-}
-
-// Mejorar UX - Enter para enviar
-mensaje.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        generarBtn.click();
-    }
-});
-    </script>
-
     </div>
+    
     </section>
     
     <!-- TEAM -->
@@ -658,7 +527,7 @@ mensaje.addEventListener('keypress', (e) => {
         </div>
     </footer>
 
-    <script src="efectos.js"></script>
+    <script src="public/efectos.js"></script>
     
 </body>
 </html>      
