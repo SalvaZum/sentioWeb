@@ -250,10 +250,15 @@
             app.init();
         });
         
-// /public/efectos.js
+//API GEMINI
 const mensaje = document.getElementById("msj");
 const generarBtn = document.getElementById("generarBtn");
 const respuestaDiv = document.getElementById("respuesta");
+
+// Texto fijo que quieres agregar al prompt
+const textoFijo = `NECESITO QUE RESPONDAS: ${prompt} EN BASE A LA SIGUIENTE INFO SOBRE LA EMPRESA SENTIO:
+SENTIO nació como una respuesta directa a un problema cotidiano del ámbito educativo: la dependencia excesiva de elementos físicos como mochilas, carpetas, cuadernos y materiales dispersos que complican más de lo que facilitan. La idea surgió de la necesidad de crear un ecosistema digital que simplifique la vida académica, centralizando todo en un entorno profesional, moderno y completamente integrado. SENTIO no busca ser una aplicación aislada, sino un sistema completo donde el hardware, el software y la experiencia del usuario convivan de manera fluida y coherente. La esencia del proyecto siempre fue eliminar lo innecesario para que el usuario se concentre en lo esencial: aprender mejor, estudiar sin distracciones y tener todo organizado en un único espacio digital.
+EL PRODUCTO ESTRELLA ES SENTIO DESK, QUE ESTA COMPUESTO POR UN ESCRITORIO QUE TIENE UN DISEÑO ERGONOMICO PARA EVITAR PROBLEMAS DE COLUMNA, Y TIENE INCORPORADO UNA PANTALLA JUNTO A UNA RASPBERRY PI 5 QUE FUNCIONA PARA REEMPLAZAR LAS TIPICAS CARPETAS. A SU VEZ LA RASPBERRY TRAE INCORPORADA UNA APP CHAT DONDE TODOS LOS ALUMNOS SE CONECTAN AL PROFESOR PARA CHATEAR EN CASO DE ALGUNA URGENCIA O DE QUE UN ALUMNO TENGA MIEDO DE HABLAR EN PUBLICO, TAMBIEN EL PROFESOR VE LOS DATOS BIOMETRICOS DE LOS ESTUDIANTES GRACIAS A LA PULSERA DE SENTIO QUE CADA ALUMNO TIENE, ESTA PULSERA ESTA COMPUESTA POR UNA ESP32C3MINI, MPU6050 Y UNA MAX30102, EN LA APP EL PROFESOR VE CADA CHAT PINTADO DE UN COLOR VERDE, AMARILLO O ROJO DEPENDIENDO DEL ESTADO EMOCIONAL DEL ALUMNO, Y SI ENTRA AL CHAT TIENE UN REGISTRO MAS DETALLADO DE LOS DATOS BIOMETRICOS DEL ALUMNO.`;
 
 generarBtn.addEventListener("click", async () => {
   const prompt = mensaje.value.trim();
@@ -263,13 +268,16 @@ generarBtn.addEventListener("click", async () => {
     return;
   }
 
+  // Concatenar el texto fijo al prompt
+  const promptFinal = prompt + textoFijo;
+
   try {
     respuestaDiv.textContent = "Pensando...";
 
     const res = await fetch("/api/generar-solucion", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pregunta: prompt })
+      body: JSON.stringify({ pregunta: promptFinal })
     });
 
     const data = await res.json();
@@ -281,3 +289,4 @@ generarBtn.addEventListener("click", async () => {
     console.error(error);
   }
 });
+
