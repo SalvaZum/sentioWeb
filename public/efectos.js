@@ -249,34 +249,35 @@
             const app = new SentioApp();
             app.init();
         });
+        
+// /public/efectos.js
+const mensaje = document.getElementById("msj");
+const generarBtn = document.getElementById("generarBtn");
+const respuestaDiv = document.getElementById("respuesta");
 
-    const mensaje = document.getElementById("msj");
-    const generarBtn = document.getElementById("generarBtn");
-    const respuestaDiv = document.getElementById("respuesta");
-    //Api GEMINI
-    generarBtn.addEventListener("click", async () => {
-    const prompt = mensaje.value.trim(); // texto del usuario
+generarBtn.addEventListener("click", async () => {
+  const prompt = mensaje.value.trim();
 
-    if (!prompt) {
-        respuestaDiv.textContent = "Por favor, escribe algo.";
-        return;
-    }
+  if (!prompt) {
+    respuestaDiv.textContent = "Por favor, escribe algo.";
+    return;
+  }
 
-    try {
-        respuestaDiv.textContent = "Pensando...";
+  try {
+    respuestaDiv.textContent = "Pensando...";
 
-        const res = await fetch("/api/generar-solucion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pregunta: prompt })
-        });
-
-        const data = await res.json();
-
-        respuestaDiv.textContent =
-        data.respuesta || "No pudimos generar una respuesta";
-    } catch (error) {
-        respuestaDiv.textContent = "Error al conectar con la API";
-        console.error(error);
-    }
+    const res = await fetch("/api/generar-solucion", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pregunta: prompt })
     });
+
+    const data = await res.json();
+
+    respuestaDiv.textContent =
+      data.respuesta || "No pudimos generar una respuesta";
+  } catch (error) {
+    respuestaDiv.textContent = "Error al conectar con la API";
+    console.error(error);
+  }
+});

@@ -1,533 +1,532 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sentio es un escritorio inteligente que combina pizarra táctil y sensores biométricos para revolucionar la educación y el trabajo">
-    <title>Sentio - Escritorio Inteligente del Futuro</title>
-    <link rel="stylesheet" href="estilo.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Estilos CSS existentes */
-        textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        #generarBtn { background: #0B1D51; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        #respuesta { white-space: pre-wrap; margin-top: 20px; padding: 20px; background: white; border-radius: 5px; border-left: 5px solid #0B1D51; min-height: 100px; }
-        
-        /* Estilos para los contenedores de iconos */
-        .icon-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 150px;
-        }
-        
-        .icon-3d {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-</head>
-<body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        class Icon3D {
-            constructor(canvasId, type) {
-                this.canvas = document.getElementById(canvasId);
-                this.type = type;
-                this.init();
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Sentio es un escritorio inteligente que combina pizarra táctil y sensores biométricos para revolucionar la educación y el trabajo">
+        <title>Sentio - Escritorio Inteligente del Futuro</title>
+        <link rel="stylesheet" href="estilo.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            /* Estilos CSS existentes */
+            textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+            #generarBtn { background: #0B1D51; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+            #respuesta { white-space: pre-wrap; margin-top: 20px; padding: 20px; background: white; border-radius: 5px; border-left: 5px solid #0B1D51; min-height: 100px; }
+            
+            /* Estilos para los contenedores de iconos */
+            .icon-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 150px;
             }
-
-            init() {
-                this.scene = new THREE.Scene();
-                this.camera = new THREE.PerspectiveCamera(70, 1, 0.1, 1000);
-                this.camera.position.z = 3;
-
-                this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
-                this.renderer.setPixelRatio(window.devicePixelRatio);
-                this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-                this.renderer.setClearColor(0x000000, 0);
-
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-                this.scene.add(ambientLight);
-
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
-                directionalLight.position.set(5, 5, 5);
-                this.scene.add(directionalLight);
-
-                this.createModel();
-                this.animate();
+            
+            .icon-3d {
+                width: 100%;
+                height: 100%;
             }
-
-            createModel() {
-                switch (this.type) {
-                    case "tablet": this.createTablet(); break;
-                    case "heart": this.createHeart(); break;
-                    case "web": this.createWebGlobe(); break;
-                }
-            }
-
-            // Tablet más angosta
-            createTablet() {
-                this.group = new THREE.Group();
-
-                // 📱 Cuerpo de la tablet (marco) - MÁS angosto
-                const bodyGeometry = new THREE.BoxGeometry(1.2, 1.2, 0.1); // Ancho reducido de 1.6 a 1.2
-                const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x0B1D51, shininess: 80 });
-                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-                this.group.add(body);
-
-                // 🔵 Pantalla - MÁS angosta
-                const screenGeometry = new THREE.BoxGeometry(1.0, 1.0, 0.02); // Ancho reducido de 1.4 a 1.0
-                const screenMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0x0072CE,
-                    emissive: 0x001a33,
-                    shininess: 120
-                });
-                const screen = new THREE.Mesh(screenGeometry, screenMaterial);
-                screen.position.z = 0.06;
-                this.group.add(screen);
-
-                // ⚪ Botón "home"
-                const buttonGeometry = new THREE.CircleGeometry(0.08, 32);
-                const buttonMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 200 });
-                const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
-                button.rotation.x = -Math.PI / 2;
-                button.position.set(0, -0.55, 0.06);
-                this.group.add(button);
-
-                // 📊 Líneas en la pantalla (apps o texto) - MÁS angostas
-                for (let i = 0; i < 3; i++) {
-                    const lineGeometry = new THREE.BoxGeometry(0.6, 0.05, 0.01); // Ancho reducido de 0.8 a 0.6
-                    const lineMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, opacity: 0.8, transparent: true });
-                    const line = new THREE.Mesh(lineGeometry, lineMaterial);
-                    line.position.set(0, 0.3 - i * 0.3, 0.07);
-                    this.group.add(line);
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script>
+            class Icon3D {
+                constructor(canvasId, type) {
+                    this.canvas = document.getElementById(canvasId);
+                    this.type = type;
+                    this.init();
                 }
 
-                // Escala final - Aplicar escala horizontal adicional
-                this.group.scale.set(0.9, 1, 1); // Reducir ancho al 90%
-                this.scene.add(this.group);
-            }
+                init() {
+                    this.scene = new THREE.Scene();
+                    this.camera = new THREE.PerspectiveCamera(70, 1, 0.1, 1000);
+                    this.camera.position.z = 3;
 
-            // Corazón más angosto
-            createHeart() {
-                this.group = new THREE.Group();
+                    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
+                    this.renderer.setPixelRatio(window.devicePixelRatio);
+                    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+                    this.renderer.setClearColor(0x000000, 0);
 
-                const shape = new THREE.Shape();
-                shape.moveTo(0, 0.25);
-                shape.bezierCurveTo(0, 0, -0.4, 0, -0.4, 0.25); // Reducir ancho del corazón
-                shape.bezierCurveTo(-0.4, 0.55, 0, 0.8, 0, 1);
-                shape.bezierCurveTo(0, 0.8, 0.4, 0.55, 0.4, 0.25); // Reducir ancho del corazón
-                shape.bezierCurveTo(0.4, 0, 0, 0, 0, 0.25);
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+                    this.scene.add(ambientLight);
 
-                const heartGeometry = new THREE.ExtrudeGeometry(shape, { 
-                    depth: 0.2, 
-                    bevelEnabled: false 
-                });
-                
-                const heartMaterial = new THREE.MeshPhongMaterial({ 
-                    color: 0xff4d6d, 
-                    shininess: 100 
-                });
-                
-                const heartMesh = new THREE.Mesh(heartGeometry, heartMaterial);
-                
-                // Centrar el corazón
-                heartMesh.rotation.x = Math.PI;
-                heartMesh.position.y = 0.4;
-                heartMesh.position.z = 0.1;
-                
-                this.group.add(heartMesh);
-                
-                // Escala más angosta (reducida en X)
-                this.group.scale.set(1.2, 1.8, 1.8); // Ancho reducido de 1.5 a 1.2
-                
-                // Centrar el grupo completo
-                this.group.position.y = 0.1;
-                
-                this.scene.add(this.group);
-            }
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+                    directionalLight.position.set(5, 5, 5);
+                    this.scene.add(directionalLight);
 
-            // Globo web más angosto
-            createWebGlobe() {
-                this.group = new THREE.Group();
-
-                // 🌎 Esfera principal (estructura de líneas) - MÁS angosta
-                const sphereGeometry = new THREE.SphereGeometry(1.3, 10, 10); // Radio reducido
-                const edges = new THREE.EdgesGeometry(sphereGeometry);
-                const lineMaterial = new THREE.LineBasicMaterial({ 
-                    color: 0x54b2ff, 
-                    linewidth: 3
-                });
-                const wireframe = new THREE.LineSegments(edges, lineMaterial);
-                
-                // Escalar para hacer más angosto
-                wireframe.scale.x = 0.6; // Reducir ancho al 60% (antes 0.8)
-                
-                this.group.add(wireframe);
-
-                // 📍 Meridianos (líneas verticales)
-                for (let i = 0; i < 8; i++) {
-                    const lineGeometry = new THREE.TorusGeometry(1.2, 0.015, 8, 32, Math.PI); // Radio reducido
-                    const lineMaterial = new THREE.LineBasicMaterial({ 
-                        color: 0xffffff,
-                        linewidth: 2
-                    });
-                    const line = new THREE.Line(lineGeometry, lineMaterial);
-                    line.rotation.y = (i * Math.PI) / 4;
-                    line.rotation.z = Math.PI / 2;
-                    
-                    // Escalar para hacer más angosto
-                    line.scale.x = 0.6; // Reducir ancho al 60% (antes 0.8)
-                    
-                    this.group.add(line);
+                    this.createModel();
+                    this.animate();
                 }
 
-                // 🔗 Líneas de conexión entre puntos - MÁS cortas
-                for (let i = 0; i < 6; i++) {
-                    const lat = Math.PI * (Math.random() - 0.5);
-                    const lon = 2 * Math.PI * Math.random();
-                    
-                    const x1 = Math.cos(lat) * Math.cos(lon) * 1.2; // Radio reducido
-                    const y1 = Math.sin(lat) * 1.2;
-                    const z1 = Math.cos(lat) * Math.sin(lon) * 1.2;
-                    
-                    const x2 = Math.cos(lat + 0.5) * Math.cos(lon + 0.5) * 1.2; // Radio reducido
-                    const y2 = Math.sin(lat + 0.5) * 1.2;
-                    const z2 = Math.cos(lat + 0.5) * Math.sin(lon + 0.5) * 1.2;
-                    
-                    const points = [];
-                    points.push(new THREE.Vector3(x1, y1, z1));
-                    points.push(new THREE.Vector3(x2, y2, z2));
-                    
-                    const connectionGeometry = new THREE.BufferGeometry().setFromPoints(points);
-                    const connectionMaterial = new THREE.LineBasicMaterial({ 
-                        color: 0x00ff88,
-                        linewidth: 2
-                    });
-                    const connection = new THREE.Line(connectionGeometry, connectionMaterial);
-                    this.group.add(connection);
-                }
-
-                // Ajustar escala general - Reducir más en X para hacer angosto
-                this.group.scale.set(0.5, 0.7, 0.7); // Ancho reducido de 0.6 a 0.5
-
-                this.scene.add(this.group);
-            }
-
-            animate() {
-                requestAnimationFrame(() => this.animate());
-                if (this.group) {
-                    const speed = this.rotationSpeed !== undefined ? this.rotationSpeed : 0.009;
-                    this.group.rotation.y += speed;
-                    
-                    if (this.satellite) {
-                        this.satellite.position.x = 1.5 * Math.cos(performance.now() * 0.001);
-                        this.satellite.position.z = 1.5 * Math.sin(performance.now() * 0.001);
+                createModel() {
+                    switch (this.type) {
+                        case "tablet": this.createTablet(); break;
+                        case "heart": this.createHeart(); break;
+                        case "web": this.createWebGlobe(); break;
                     }
                 }
-                this.renderer.render(this.scene, this.camera);
+
+                // Tablet más angosta
+                createTablet() {
+                    this.group = new THREE.Group();
+
+                    // 📱 Cuerpo de la tablet (marco) - MÁS angosto
+                    const bodyGeometry = new THREE.BoxGeometry(1.2, 1.2, 0.1); // Ancho reducido de 1.6 a 1.2
+                    const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x0B1D51, shininess: 80 });
+                    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+                    this.group.add(body);
+
+                    // 🔵 Pantalla - MÁS angosta
+                    const screenGeometry = new THREE.BoxGeometry(1.0, 1.0, 0.02); // Ancho reducido de 1.4 a 1.0
+                    const screenMaterial = new THREE.MeshPhongMaterial({ 
+                        color: 0x0072CE,
+                        emissive: 0x001a33,
+                        shininess: 120
+                    });
+                    const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+                    screen.position.z = 0.06;
+                    this.group.add(screen);
+
+                    // ⚪ Botón "home"
+                    const buttonGeometry = new THREE.CircleGeometry(0.08, 32);
+                    const buttonMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 200 });
+                    const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
+                    button.rotation.x = -Math.PI / 2;
+                    button.position.set(0, -0.55, 0.06);
+                    this.group.add(button);
+
+                    // 📊 Líneas en la pantalla (apps o texto) - MÁS angostas
+                    for (let i = 0; i < 3; i++) {
+                        const lineGeometry = new THREE.BoxGeometry(0.6, 0.05, 0.01); // Ancho reducido de 0.8 a 0.6
+                        const lineMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, opacity: 0.8, transparent: true });
+                        const line = new THREE.Mesh(lineGeometry, lineMaterial);
+                        line.position.set(0, 0.3 - i * 0.3, 0.07);
+                        this.group.add(line);
+                    }
+
+                    // Escala final - Aplicar escala horizontal adicional
+                    this.group.scale.set(0.9, 1, 1); // Reducir ancho al 90%
+                    this.scene.add(this.group);
+                }
+
+                // Corazón más angosto
+                createHeart() {
+                    this.group = new THREE.Group();
+
+                    const shape = new THREE.Shape();
+                    shape.moveTo(0, 0.25);
+                    shape.bezierCurveTo(0, 0, -0.4, 0, -0.4, 0.25); // Reducir ancho del corazón
+                    shape.bezierCurveTo(-0.4, 0.55, 0, 0.8, 0, 1);
+                    shape.bezierCurveTo(0, 0.8, 0.4, 0.55, 0.4, 0.25); // Reducir ancho del corazón
+                    shape.bezierCurveTo(0.4, 0, 0, 0, 0, 0.25);
+
+                    const heartGeometry = new THREE.ExtrudeGeometry(shape, { 
+                        depth: 0.2, 
+                        bevelEnabled: false 
+                    });
+                    
+                    const heartMaterial = new THREE.MeshPhongMaterial({ 
+                        color: 0xff4d6d, 
+                        shininess: 100 
+                    });
+                    
+                    const heartMesh = new THREE.Mesh(heartGeometry, heartMaterial);
+                    
+                    // Centrar el corazón
+                    heartMesh.rotation.x = Math.PI;
+                    heartMesh.position.y = 0.4;
+                    heartMesh.position.z = 0.1;
+                    
+                    this.group.add(heartMesh);
+                    
+                    // Escala más angosta (reducida en X)
+                    this.group.scale.set(1.2, 1.8, 1.8); // Ancho reducido de 1.5 a 1.2
+                    
+                    // Centrar el grupo completo
+                    this.group.position.y = 0.1;
+                    
+                    this.scene.add(this.group);
+                }
+
+                // Globo web más angosto
+                createWebGlobe() {
+                    this.group = new THREE.Group();
+
+                    // 🌎 Esfera principal (estructura de líneas) - MÁS angosta
+                    const sphereGeometry = new THREE.SphereGeometry(1.3, 10, 10); // Radio reducido
+                    const edges = new THREE.EdgesGeometry(sphereGeometry);
+                    const lineMaterial = new THREE.LineBasicMaterial({ 
+                        color: 0x54b2ff, 
+                        linewidth: 3
+                    });
+                    const wireframe = new THREE.LineSegments(edges, lineMaterial);
+                    
+                    // Escalar para hacer más angosto
+                    wireframe.scale.x = 0.6; // Reducir ancho al 60% (antes 0.8)
+                    
+                    this.group.add(wireframe);
+
+                    // 📍 Meridianos (líneas verticales)
+                    for (let i = 0; i < 8; i++) {
+                        const lineGeometry = new THREE.TorusGeometry(1.2, 0.015, 8, 32, Math.PI); // Radio reducido
+                        const lineMaterial = new THREE.LineBasicMaterial({ 
+                            color: 0xffffff,
+                            linewidth: 2
+                        });
+                        const line = new THREE.Line(lineGeometry, lineMaterial);
+                        line.rotation.y = (i * Math.PI) / 4;
+                        line.rotation.z = Math.PI / 2;
+                        
+                        // Escalar para hacer más angosto
+                        line.scale.x = 0.6; // Reducir ancho al 60% (antes 0.8)
+                        
+                        this.group.add(line);
+                    }
+
+                    // 🔗 Líneas de conexión entre puntos - MÁS cortas
+                    for (let i = 0; i < 6; i++) {
+                        const lat = Math.PI * (Math.random() - 0.5);
+                        const lon = 2 * Math.PI * Math.random();
+                        
+                        const x1 = Math.cos(lat) * Math.cos(lon) * 1.2; // Radio reducido
+                        const y1 = Math.sin(lat) * 1.2;
+                        const z1 = Math.cos(lat) * Math.sin(lon) * 1.2;
+                        
+                        const x2 = Math.cos(lat + 0.5) * Math.cos(lon + 0.5) * 1.2; // Radio reducido
+                        const y2 = Math.sin(lat + 0.5) * 1.2;
+                        const z2 = Math.cos(lat + 0.5) * Math.sin(lon + 0.5) * 1.2;
+                        
+                        const points = [];
+                        points.push(new THREE.Vector3(x1, y1, z1));
+                        points.push(new THREE.Vector3(x2, y2, z2));
+                        
+                        const connectionGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                        const connectionMaterial = new THREE.LineBasicMaterial({ 
+                            color: 0x00ff88,
+                            linewidth: 2
+                        });
+                        const connection = new THREE.Line(connectionGeometry, connectionMaterial);
+                        this.group.add(connection);
+                    }
+
+                    // Ajustar escala general - Reducir más en X para hacer angosto
+                    this.group.scale.set(0.5, 0.7, 0.7); // Ancho reducido de 0.6 a 0.5
+
+                    this.scene.add(this.group);
+                }
+
+                animate() {
+                    requestAnimationFrame(() => this.animate());
+                    if (this.group) {
+                        const speed = this.rotationSpeed !== undefined ? this.rotationSpeed : 0.009;
+                        this.group.rotation.y += speed;
+                        
+                        if (this.satellite) {
+                            this.satellite.position.x = 1.5 * Math.cos(performance.now() * 0.001);
+                            this.satellite.position.z = 1.5 * Math.sin(performance.now() * 0.001);
+                        }
+                    }
+                    this.renderer.render(this.scene, this.camera);
+                }
             }
-        }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            new Icon3D("tablet-canvas", "tablet");
-            new Icon3D("heart-canvas", "heart");
-            new Icon3D("education-canvas", "web");
-        });
-    </script>
-    <body>
-        <!-- Loading Screen -->
-        <div class="loading-screen" id="loadingScreen" aria-live="polite" aria-label="Cargando aplicación">
-            <div class="loading-logo">Sentio</div>
+            document.addEventListener("DOMContentLoaded", () => {
+                new Icon3D("tablet-canvas", "tablet");
+                new Icon3D("heart-canvas", "heart");
+                new Icon3D("education-canvas", "web");
+            });
+        </script>
+    </head>
+        <body>
+            <!-- Loading Screen -->
+            <div class="loading-screen" id="loadingScreen" aria-live="polite" aria-label="Cargando aplicación">
+                <div class="loading-logo">Sentio</div>
+            </div>
+
+            <!-- Header -->
+            <header class="header" id="header" role="banner">
+                <div class="particles" id="headerParticles" aria-hidden="true"></div>
+                <div class="header-content">
+                    <a href="#" class="logo" aria-label="Sentio - Inicio">Sentio</a>
+                    <nav class="nav" role="navigation" aria-label="Menú principal">
+                        <ul>
+                            <li><a href="#inicio">Inicio</a></li>
+                            <li><a href="#funcionalidades">Nuestro producto</a></li>
+                            <li><a href="#soporte">Soporte Técnico</a></li>
+                            <li><a href="#quienes">¿Quienes somos?</a></li>
+                            <li><a href="#contacto">Contacto</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- Main Banner -->
+            <section id="inicio" class="banner" role="region" aria-labelledby="banner-heading">
+                <div class="particles" id="bannerParticles" aria-hidden="true"></div>
+                <div class="banner-content">
+                    <h1 id="banner-heading">Revoluciona la forma de aprender y trabajar</h1>
+                    <p class="subtitle">Un escritorio inteligente que combina pizarra táctil y sensores biométricos para crear la experiencia educativa del futuro</p>
+                    <a href="#funcionalidades" class="cta-button">Descubrí Sentio</a>
+                </div>
+            </section>
+            
+            <!-- Introduction -->
+            <section class="section" aria-labelledby="que-es-sentio">
+                <h2 id="que-es-sentio">¿Qué es Sentio Desk?</h2>
+                <p class="intro-text">
+                    Sentio Desk es un escritorio inteligente diseñado para transformar la educación, 
+                    integrando una pizarra táctil interactiva y sensores biométricos para medir concentración y bienestar en tiempo real.
+                </p>
+                <div class="features-grid">
+                    <div class="feature-icon">
+                        <div class="icon-container">
+                            <canvas class="icon-3d" id="tablet-canvas"></canvas>
+                        </div>
+                        <h3>Pizarra táctil</h3>
+                        <p>Pantalla integrada en la mesa con acceso a internet.</p>
+                    </div>
+                    <div class="feature-icon">
+                        <div class="icon-container">
+                            <canvas class="icon-3d" id="heart-canvas"></canvas>
+                        </div>
+                        <h3>Sensores biométricos</h3>
+                        <p>Monitoreo de pulso, estrés y bienestar en tiempo real con análisis predictivo</p>
+                    </div>
+                    <div class="feature-icon">
+                        <div class="icon-container">
+                            <canvas class="icon-3d" id="education-canvas"></canvas>
+                        </div>
+                        <h3>Plataforma educativa</h3>
+                        <p>Comunicación integrada entre profesor-alumno</p>
+                    </div>
+                </div>
+            </section>
+
+        <!-- Functionalities -->
+        <section id="funcionalidades" class="section" aria-labelledby="funcionalidades-heading">
+            <h2 id="funcionalidades-heading">Funcionalidades principales</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>Pizarra táctil avanzada</h3>
+                    <p>Reemplaza cuadernos y pizarras físicas con tecnología táctil de última generación, permitiendo interacción digital directa para mejorar el desempeño y aumentar las herramientas del alumno para estudiar.</p>
+                </div>
+                <div class="card">
+                    <h3>Sensores biométricos inteligentes</h3>
+                    <p>Mide concentración, estrés y bienestar en tiempo real, proporcionando informacion importante al profesor para controlar el rendimiento del usuario.</p>
+                </div>
+                <div class="card">
+                    <h3>Escritorio ajustable</h3>
+                    <p>La mesa del escritorio posee una inclinacion regulable para evitar problemas a largo plazo en la columna y poder estudiar de una manera más comoda.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Support -->
+        <section id="soporte" class="section" aria-labelledby="soporte-heading">
+            <h2 id="soporte-heading">IA de soporte técnico</h2>
+            <p class="intro-text">
+                Nuestra IA integrada responde tus dudas y problemas técnicos de manera rápida e inteligente, 
+                aprendiendo de cada interacción para brindarte un soporte cada vez más personalizado.
+            </p>
+            <div class="chat-window" role="region" aria-label="Chat de soporte técnico">
+                <div class="chat-header">
+                    Asistente IA de Sentio
+                </div>
+        <textarea id="msj" class="msj" placeholder="Ej: ¿Que es SentioDesk?" style="::placeholder{color: black;}"></textarea>
+        <button id="generarBtn">Preguntar</button>
+        <div id="respuesta">Aqui aparecera tu respuesta...</div>
         </div>
-
-        <!-- Header -->
-        <header class="header" id="header" role="banner">
-            <div class="particles" id="headerParticles" aria-hidden="true"></div>
-            <div class="header-content">
-                <a href="#" class="logo" aria-label="Sentio - Inicio">Sentio</a>
-                <nav class="nav" role="navigation" aria-label="Menú principal">
-                    <ul>
-                        <li><a href="#inicio">Inicio</a></li>
-                        <li><a href="#funcionalidades">Nuestro producto</a></li>
-                        <li><a href="#soporte">Soporte Técnico</a></li>
-                        <li><a href="#quienes">¿Quienes somos?</a></li>
-                        <li><a href="#contacto">Contacto</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-
-        <!-- Main Banner -->
-        <section id="inicio" class="banner" role="region" aria-labelledby="banner-heading">
-            <div class="particles" id="bannerParticles" aria-hidden="true"></div>
-            <div class="banner-content">
-                <h1 id="banner-heading">Revoluciona la forma de aprender y trabajar</h1>
-                <p class="subtitle">Un escritorio inteligente que combina pizarra táctil y sensores biométricos para crear la experiencia educativa del futuro</p>
-                <a href="#funcionalidades" class="cta-button">Descubrí Sentio</a>
-            </div>
+        
         </section>
         
-        <!-- Introduction -->
-        <section class="section" aria-labelledby="que-es-sentio">
-            <h2 id="que-es-sentio">¿Qué es Sentio Desk?</h2>
-            <p class="intro-text">
-                Sentio Desk es un escritorio inteligente diseñado para transformar la educación, 
-                integrando una pizarra táctil interactiva y sensores biométricos para medir concentración y bienestar en tiempo real.
-            </p>
-            <div class="features-grid">
-                <div class="feature-icon">
-                    <div class="icon-container">
-                        <canvas class="icon-3d" id="tablet-canvas"></canvas>
+        <!-- TEAM -->
+        <section style="margin: 20px;">
+            <div style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+                <h1 style="color: #0B1D51; font-size: 50px;">Nuestro Equipo</h1>
+                <h2 style="font-family: Arial, Helvetica, sans-serif; font-weight: 100;">Conoce a los 6 integrantes que hicieron posible este proyecto innovador</h2>
+            </div>
+            <div class="integrantes">
+                <div class="subIntegrantes">
+                    <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
+                    <img src="imagenes/trinidad.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
+                    <div style="padding: 15px; margin: 10px;">
+                        <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Desarolladora de hardware y software</h5>
+                        <h4 style="color: black; font-weight: 800; margin-left: 10px;">Alina Olmos</h4>
+                        <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CTO</h4> 
+                        <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
+                        <ul style="margin:10px; " >
+                        <li style="font-size: 15px; color: grey;">Coordinación general del equipo</li>
+                        <li style="font-size: 15px; color: grey;">Armado físico del escritorio y la pulsera boimétrica</li>
+                        <li style="font-size: 15px; color: grey;">Desarollo del hardware</li>
+                        <li style="font-size: 15px; color: grey;">Control de calidad en todas las etapas</li>
+                        <li style="font-size: 15px; color: grey;">Comunicación técnica del proyecto</li>
+                    </ul>
                     </div>
-                    <h3>Pizarra táctil</h3>
-                    <p>Pantalla integrada en la mesa con acceso a internet.</p>
+                    </div>
+                <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
+                    <img src="imagenes/salvador.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
+                    <div style="padding: 15px; margin: 10px;">
+                        <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Desarolladora de software</h5>
+                        <h4 style="color: black; font-weight: 800; margin-left: 10px;">Salvador Zumstein</h4>
+                        <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CTO</h4> 
+                        <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
+                        <ul style="margin:10px; " >
+                        <li style="font-size: 15px; color: grey;">Desarollo del software</li>
+                        <li style="font-size: 15px; color: grey;">Diseño y armado de renders 3D</li>
+                        <li style="font-size: 15px; color: grey;">Apoyo directo a la coordinación general del equipo</li>
+                        <li style="font-size: 15px; color: grey;">Participación en el diseño de la experiencia de usuario en el producto</li>
+                    </ul>
+                    </div>
                 </div>
-                <div class="feature-icon">
-                    <div class="icon-container">
-                        <canvas class="icon-3d" id="heart-canvas"></canvas>
+                <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
+                    <img src="imagenes/cismar.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
+                    <div style="padding: 15px; margin: 10px;">
+                        <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Diseñadora UX/UI</h5>
+                        <h4 style="color: black; font-weight: 800; margin-left: 10px;">Cismar Cedeño</h4>
+                        <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CEO</h4> 
+                        <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
+                        <ul style="margin:10px; " >
+                        <li style="font-size: 15px; color: grey;">Directora del area de marketing</li>
+                        <li style="font-size: 15px; color: grey;">Diseñadora visual</li>
+                        <li style="font-size: 15px; color: grey;">Logística general y gestión de redes sociales institucionales</li>
+                        <li style="font-size: 15px; color: grey;">Diseño de la identidad visual de la marca</li>
+                    </ul>
                     </div>
-                    <h3>Sensores biométricos</h3>
-                    <p>Monitoreo de pulso, estrés y bienestar en tiempo real con análisis predictivo</p>
                 </div>
-                <div class="feature-icon">
-                    <div class="icon-container">
-                        <canvas class="icon-3d" id="education-canvas"></canvas>
+                </div>
+                <div class="subIntegrantes">
+                <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
+                    <img src="imagenes/santina.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
+                    <div style="padding: 15px; margin: 10px;">
+                        <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Marketing</h5>
+                        <h4 style="color: black; font-weight: 800; margin-left: 10px;">Santina Bar</h4>
+                        <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CMO</h4> 
+                        <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
+                        <ul style="margin:10px; " >
+                        <li style="font-size: 15px; color: grey;">Estrategia de marketing</li>
+                        <li style="font-size: 15px; color: grey;">Diseñado de la identidad de la marca</li>
+                        <li style="font-size: 15px; color: grey;">Gestión de redes sociales y producción de contenido digital</li>
+                        <li style="font-size: 15px; color: grey;">Diseño gráfico del logo y material promocional</li>
+                    </ul>
                     </div>
-                    <h3>Plataforma educativa</h3>
-                    <p>Comunicación integrada entre profesor-alumno</p>
+                </div>
+                <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
+                    <img src="imagenes/castro.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
+                    <div style="padding: 15px; margin: 10px;">
+                        <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Logistica y producción</h5>
+                        <h4 style="color: black; font-weight: 800; margin-left: 10px;">Joaquin Castro</h4>
+                        <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CMO & CFO</h4> 
+                        <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
+                        <ul style="margin:10px; " >
+                        <li style="font-size: 15px; color: grey;">Estrategia de ventas y marketing</li>
+                        <li style="font-size: 15px; color: grey;">Manejo de produccion</li>
+                        <li style="font-size: 15px; color: grey;">Administración de recursos y presupuesto</li>
+                    </ul>
+                    </div>
+                </div>
+                <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
+                    <img src="imagenes/donato.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
+                    <div style="padding: 15px; margin: 10px;">
+                        <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Marketing</h5>
+                        <h4 style="color: black; font-weight: 800; margin-left: 10px;">Donato Giordano</h4>
+                        <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CMO</h4> 
+                        <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
+                        <ul style="margin:10px; " >
+                        <li style="font-size: 15px; color: grey;">Capacitación docente en el uso de Sentio Desk</li>
+                        <li style="font-size: 15px; color: grey;">Apoyo en presentacione y demostraciones publicas</li>
+                        <li style="font-size: 15px; color: grey;">Marketing y posicionamiento en el sector educativo</li>
+                    </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Contact -->
+        <section id="contacto" class="section" aria-labelledby="contacto-heading">
+            <h2 id="contacto-heading">Contactanos</h2>
+            <div class="new">
+                <div class="secondary">
+                <h3>¿Interesado en implementar nuestro sistema?</h3>
+                <p>Estamos disponibles para demostraciones, implementaciones en instituciones educativas o colaboraciones de investigación. Todos los mensajes se envían directamente a nuestro equipo.</p>
+                <div class="contacto">
+                    <div style="display: flex; flex-direction: row; align-items: center;"><span  style="display: flex; flex-direction: row; justify-content: center;">⚲</span><h4> Córdoba, Argentina</h4></div>
+                </div>
+                <div class="contacto">
+                    <div style="display: flex; flex-direction: row; align-items: center;"><span  style="display: flex; flex-direction: row; justify-content: center;">✉︎</span><h4> sentioarg@gmail.com</h4></div>
+                </div>
+                <h3 style="margin-top: 80px;">Siguenos en nuestras redes:</h3>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/sentio.ar?igsh=MWd5dmlzZmpkZXBjNw==" target="_blank" class="iconos">
+                        <i class="fab fa-instagram"></i>
+                    </a>  
+                    <a href="https://www.tiktok.com/@sentiodesk?_t=ZM-8ytwZYZINZF&_r=1" target="_blank" class="iconos">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://x.com/SentioDesk25?t=IVt49qpK7TpJlQ40SgiTiQ&s=09" target="_blank" class="iconos">
+                        <i class="fab fa-x"></i>
+                    </a>
+                </div>
+                </div>
+                <div class="secondary">
+                    <form class="contact-form" action="https://formsubmit.co/sentioarg@gmail.com" method="POST">
+                        <div class="form-group">
+                            <label for="">Nombre</label>
+                            <input type="text" name="name" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Correo electrónico</label>    
+                            <input type="email" name="email" placeholder="Tu correo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Mensaje</label>
+                            <textarea class="text" name="message" placeholder="Tu mensaje" required></textarea>
+                        </div>
+                        
+                        <!-- Evitar spam -->
+                        <input type="text" name="_honey" style="display:none">
+                        
+                        <!-- Evitar captcha -->
+                        <input type="hidden" name="_captcha" value="false">
+
+                        <input type="hidden" name="_next" value="https://sentio-web.vercel.app">
+
+                        <button  class="submit-button" type="submit">Enviar a sentioarg@gmail.com</button>
+                        <p>✉︎Los mensaje se envíaran a <a href="mailto:sentioarg@gmail.com" class="sentioMail">sentioarg@gmail.com</a></p>
+                    </form>
                 </div>
             </div>
         </section>
 
-    <!-- Functionalities -->
-    <section id="funcionalidades" class="section" aria-labelledby="funcionalidades-heading">
-        <h2 id="funcionalidades-heading">Funcionalidades principales</h2>
-        <div class="cards-grid">
-            <div class="card">
-                <h3>Pizarra táctil avanzada</h3>
-                <p>Reemplaza cuadernos y pizarras físicas con tecnología táctil de última generación, permitiendo interacción digital directa para mejorar el desempeño y aumentar las herramientas del alumno para estudiar.</p>
-            </div>
-            <div class="card">
-                <h3>Sensores biométricos inteligentes</h3>
-                <p>Mide concentración, estrés y bienestar en tiempo real, proporcionando informacion importante al profesor para controlar el rendimiento del usuario.</p>
-            </div>
-            <div class="card">
-                <h3>Escritorio ajustable</h3>
-                <p>La mesa del escritorio posee una inclinacion regulable para evitar problemas a largo plazo en la columna y poder estudiar de una manera más comoda.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Technical Support -->
-    <section id="soporte" class="section" aria-labelledby="soporte-heading">
-        <h2 id="soporte-heading">IA de soporte técnico</h2>
-        <p class="intro-text">
-            Nuestra IA integrada responde tus dudas y problemas técnicos de manera rápida e inteligente, 
-            aprendiendo de cada interacción para brindarte un soporte cada vez más personalizado.
-        </p>
-        <div class="chat-window" role="region" aria-label="Chat de soporte técnico">
-            <div class="chat-header">
-                Asistente IA de Sentio
-            </div>
-    <textarea id="msj" class="msj" placeholder="Ej: ¿Que es SentioDesk?" style="::placeholder{color: black;}"></textarea>
-    <button id="generarBtn">Preguntar</button>
-    <div id="respuesta">Aqui aparecera tu respuesta...</div>
-    </div>
-    
-    </section>
-    
-    <!-- TEAM -->
-    <section style="margin: 20px;">
-        <div style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
-            <h1 style="color: #0B1D51; font-size: 50px;">Nuestro Equipo</h1>
-            <h2 style="font-family: Arial, Helvetica, sans-serif; font-weight: 100;">Conoce a los 6 integrantes que hicieron posible este proyecto innovador</h2>
-        </div>
-        <div class="integrantes">
-            <div class="subIntegrantes">
-                <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
-                <img src="imagenes/trinidad.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
-                <div style="padding: 15px; margin: 10px;">
-                    <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Desarolladora de hardware y software</h5>
-                    <h4 style="color: black; font-weight: 800; margin-left: 10px;">Alina Olmos</h4>
-                    <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CTO</h4> 
-                    <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
-                    <ul style="margin:10px; " >
-                    <li style="font-size: 15px; color: grey;">Coordinación general del equipo</li>
-                    <li style="font-size: 15px; color: grey;">Armado físico del escritorio y la pulsera boimétrica</li>
-                    <li style="font-size: 15px; color: grey;">Desarollo del hardware</li>
-                    <li style="font-size: 15px; color: grey;">Control de calidad en todas las etapas</li>
-                    <li style="font-size: 15px; color: grey;">Comunicación técnica del proyecto</li>
-                </ul>
+        <!-- Footer -->
+        <footer class="footer" role="contentinfo">
+            <div class="particles" id="footerParticles" aria-hidden="true"></div>
+            <div class="footer-content">
+                <div>
+                    <p>&copy; 2025 Sentio – Todos los derechos reservados</p>
                 </div>
+                <div>
+                    <h2>Sentio</h2>
+                    <p>Revolucionando la educación con tecnología inteligente. Escritorio digital interactivo para el futuro del aprendizaje.</p>
                 </div>
-            <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
-                <img src="imagenes/salvador.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
-                <div style="padding: 15px; margin: 10px;">
-                    <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Desarolladora de software</h5>
-                    <h4 style="color: black; font-weight: 800; margin-left: 10px;">Salvador Zumstein</h4>
-                    <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CTO</h4> 
-                    <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
-                    <ul style="margin:10px; " >
-                    <li style="font-size: 15px; color: grey;">Desarollo del software</li>
-                    <li style="font-size: 15px; color: grey;">Diseño y armado de renders 3D</li>
-                    <li style="font-size: 15px; color: grey;">Apoyo directo a la coordinación general del equipo</li>
-                    <li style="font-size: 15px; color: grey;">Participación en el diseño de la experiencia de usuario en el producto</li>
-                </ul>
+                <div>
+                    <h2>Navegacion</h2>
+                    <a href="#inicio"><h4>Inicio</h4></a>
+                    <a href="#funcionalidades"><h4>Funcionalidades</h4></a>
+                    <a href="#soporte"><h4>Soporte Tecnico</h4></a>
+                </div>
+                <div>
+                    <h2>Contacto</h2>
+                    <p>⚲ Córdoba, Argentina</p>
+                    <p>✉︎ sentioarg@gmail.com</p>
                 </div>
             </div>
-            <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
-                <img src="imagenes/cismar.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
-                <div style="padding: 15px; margin: 10px;">
-                    <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Diseñadora UX/UI</h5>
-                    <h4 style="color: black; font-weight: 800; margin-left: 10px;">Cismar Cedeño</h4>
-                    <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CEO</h4> 
-                    <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
-                    <ul style="margin:10px; " >
-                    <li style="font-size: 15px; color: grey;">Directora del area de marketing</li>
-                    <li style="font-size: 15px; color: grey;">Diseñadora visual</li>
-                    <li style="font-size: 15px; color: grey;">Logística general y gestión de redes sociales institucionales</li>
-                    <li style="font-size: 15px; color: grey;">Diseño de la identidad visual de la marca</li>
-                </ul>
-                </div>
-            </div>
-            </div>
-            <div class="subIntegrantes">
-            <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
-                <img src="imagenes/santina.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
-                <div style="padding: 15px; margin: 10px;">
-                    <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Marketing</h5>
-                    <h4 style="color: black; font-weight: 800; margin-left: 10px;">Santina Bar</h4>
-                    <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CMO</h4> 
-                    <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
-                    <ul style="margin:10px; " >
-                    <li style="font-size: 15px; color: grey;">Estrategia de marketing</li>
-                    <li style="font-size: 15px; color: grey;">Diseñado de la identidad de la marca</li>
-                    <li style="font-size: 15px; color: grey;">Gestión de redes sociales y producción de contenido digital</li>
-                    <li style="font-size: 15px; color: grey;">Diseño gráfico del logo y material promocional</li>
-                </ul>
-                </div>
-            </div>
-            <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
-                <img src="imagenes/castro.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
-                <div style="padding: 15px; margin: 10px;">
-                    <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Logistica y producción</h5>
-                    <h4 style="color: black; font-weight: 800; margin-left: 10px;">Joaquin Castro</h4>
-                    <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CMO & CFO</h4> 
-                    <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
-                    <ul style="margin:10px; " >
-                    <li style="font-size: 15px; color: grey;">Estrategia de ventas y marketing</li>
-                    <li style="font-size: 15px; color: grey;">Manejo de produccion</li>
-                    <li style="font-size: 15px; color: grey;">Administración de recursos y presupuesto</li>
-                </ul>
-                </div>
-            </div>
-            <div style="width: 300px; border-radius: 10px; box-shadow: 0 20px 40px grey; ">
-                <img src="imagenes/donato.png" alt="" style="border-radius: 10px; width: 100%; max-height: 200px; object-fit: cover;">
-                <div style="padding: 15px; margin: 10px;">
-                    <h5 style="margin:10px; color: #0B1D51; background-color: #0071ce38; border-radius: 10px; padding: 5px; display: flex; justify-content: center;">Marketing</h5>
-                    <h4 style="color: black; font-weight: 800; margin-left: 10px;">Donato Giordano</h4>
-                    <h4 style="margin-left: 10px; color: hsl(229, 85%, 73%);">CMO</h4> 
-                    <h5 style="font-weight: 800; margin-left: 10px;">Responsabilidades:</h5>
-                    <ul style="margin:10px; " >
-                    <li style="font-size: 15px; color: grey;">Capacitación docente en el uso de Sentio Desk</li>
-                    <li style="font-size: 15px; color: grey;">Apoyo en presentacione y demostraciones publicas</li>
-                    <li style="font-size: 15px; color: grey;">Marketing y posicionamiento en el sector educativo</li>
-                </ul>
-                </div>
-            </div>
-            </div>
-        </div>
+        </footer>
 
-    </section>
-
-    <!-- Contact -->
-    <section id="contacto" class="section" aria-labelledby="contacto-heading">
-        <h2 id="contacto-heading">Contactanos</h2>
-        <div class="new">
-            <div class="secondary">
-            <h3>¿Interesado en implementar nuestro sistema?</h3>
-            <p>Estamos disponibles para demostraciones, implementaciones en instituciones educativas o colaboraciones de investigación. Todos los mensajes se envían directamente a nuestro equipo.</p>
-            <div class="contacto">
-                <div style="display: flex; flex-direction: row; align-items: center;"><span  style="display: flex; flex-direction: row; justify-content: center;">⚲</span><h4> Córdoba, Argentina</h4></div>
-            </div>
-            <div class="contacto">
-                <div style="display: flex; flex-direction: row; align-items: center;"><span  style="display: flex; flex-direction: row; justify-content: center;">✉︎</span><h4> sentioarg@gmail.com</h4></div>
-            </div>
-            <h3 style="margin-top: 80px;">Siguenos en nuestras redes:</h3>
-            <div class="social-icons">
-                <a href="https://www.instagram.com/sentio.ar?igsh=MWd5dmlzZmpkZXBjNw==" target="_blank" class="iconos">
-                    <i class="fab fa-instagram"></i>
-                </a>  
-                <a href="https://www.tiktok.com/@sentiodesk?_t=ZM-8ytwZYZINZF&_r=1" target="_blank" class="iconos">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="https://x.com/SentioDesk25?t=IVt49qpK7TpJlQ40SgiTiQ&s=09" target="_blank" class="iconos">
-                    <i class="fab fa-x"></i>
-                </a>
-            </div>
-            </div>
-            <div class="secondary">
-                <form class="contact-form" action="https://formsubmit.co/sentioarg@gmail.com" method="POST">
-                    <div class="form-group">
-                        <label for="">Nombre</label>
-                        <input type="text" name="name" placeholder="Tu nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Correo electrónico</label>    
-                        <input type="email" name="email" placeholder="Tu correo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Mensaje</label>
-                        <textarea class="text" name="message" placeholder="Tu mensaje" required></textarea>
-                    </div>
-                    
-                    <!-- Evitar spam -->
-                    <input type="text" name="_honey" style="display:none">
-                    
-                    <!-- Evitar captcha -->
-                    <input type="hidden" name="_captcha" value="false">
-
-                    <input type="hidden" name="_next" value="https://sentio-web.vercel.app">
-
-                    <button  class="submit-button" type="submit">Enviar a sentioarg@gmail.com</button>
-                    <p>✉︎Los mensaje se envíaran a <a href="mailto:sentioarg@gmail.com" class="sentioMail">sentioarg@gmail.com</a></p>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="particles" id="footerParticles" aria-hidden="true"></div>
-        <div class="footer-content">
-            <div>
-                <p>&copy; 2025 Sentio – Todos los derechos reservados</p>
-            </div>
-            <div>
-                <h2>Sentio</h2>
-                <p>Revolucionando la educación con tecnología inteligente. Escritorio digital interactivo para el futuro del aprendizaje.</p>
-            </div>
-            <div>
-                <h2>Navegacion</h2>
-                <a href="#inicio"><h4>Inicio</h4></a>
-                <a href="#funcionalidades"><h4>Funcionalidades</h4></a>
-                <a href="#soporte"><h4>Soporte Tecnico</h4></a>
-            </div>
-            <div>
-                <h2>Contacto</h2>
-                <p>⚲ Córdoba, Argentina</p>
-                <p>✉︎ sentioarg@gmail.com</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="efectos.js"></script>
-    
-</body>
-</html>      
+        <script src="efectos.js"></script>
+        
+    </body>
+    </html>      
