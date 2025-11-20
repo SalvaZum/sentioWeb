@@ -17,9 +17,12 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "API Key no configurada" });
     }
 
+    // API v1 (la correcta hoy)
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.0-pro" });
+    const model = genAI.getGenerativeModel({
+      model: "models/gemini-2.5-flash", // SIN "models/" adelante
+    });
 
     const result = await model.generateContent(pregunta);
     const respuesta = result.response.text();
@@ -28,6 +31,8 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error("API ERROR:", error);
-    return res.status(500).json({ error: error.message || "Error interno en la API" });
+    return res.status(500).json({
+      error: error.message || "Error interno en la API",
+    });
   }
 }
