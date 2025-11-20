@@ -1,6 +1,3 @@
-// /api/generar-solucion.js
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
@@ -18,18 +15,27 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "API Key no configurada" });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + apiKey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: pregunta }] }]
+        })
+      }
+    );
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
+    const data = await response.json();
 
-    const result = await model.generateContent(pregunta);
-    const respuesta = result.response.text();
+    const respuesta =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No pude generar respuesta";
 
-    return res.status(200).json({ respuesta });
+    res.status(200).json({ respuesta });
+
   } catch (error) {
     console.error("API ERROR:", error);
-    return res.status(500).json({ error: "Error interno en la API" });
+    res.status(500).json({ error: "Error interno en la API" });
   }
 }
